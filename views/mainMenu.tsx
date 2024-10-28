@@ -18,7 +18,7 @@ export default function MainMenu() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Main Menu</Text>
+      <Text style={styles.header}>Mapa de Donantes Activos</Text>
       <Maps />
       <View style={styles.button}>
         <Button title="Sign Out" onPress={handleSignOut} />
