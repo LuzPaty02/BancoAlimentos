@@ -1,7 +1,23 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { AuthContext } from './authentication';
+import { AuthContext } from './Authentication';
+
+const screenHeight = Dimensions.get('window').height;
+const RPH = (percentage: any) => {
+    return (percentage / 100) * screenHeight;
+};
+
+const screenWidth = Dimensions.get('window').width;
+const RPW = (percentage: any) => {
+    return (percentage / 100) * screenWidth;
+};
+
+const logo = {
+    uri: 'https://bamx.org.mx/wp-content/uploads/2023/12/Logo-RED-BAMX_Mesa-de-trabajo-1.png',
+    width: RPW(90),
+    height: RPH(20),
+};
 
 const LoginSignUp: React.FC = () => {
     const authContext = useContext(AuthContext);
@@ -50,6 +66,7 @@ const LoginSignUp: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <Image source={logo} style={{ resizeMode: 'contain' }}></Image>
             <Text>{isSignUp ? "Sign Up" : "Login"}</Text>
             <TextInput
                 style={styles.inputField}
@@ -65,12 +82,9 @@ const LoginSignUp: React.FC = () => {
                 value={password}
                 onChangeText={setPassword}
             />
-            <View style={styles.button}>
-                <Button
-                    title={isSignUp ? "Sign Up" : "Login"}
-                    onPress={isSignUp ? handleSignUp : handleLogin}
-                />
-            </View>
+            <Pressable style={styles.button}>
+                <Text style= {styles.textButton}> Login </Text>
+            </Pressable>
             <View style={styles.switchText}>
                 <Text>{isSignUp ? "Already have an account?" : "Don't have an account?"}</Text>
             </View>
@@ -89,6 +103,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
+        fontFamily: 'Roboto',
     },
     inputField: {
         margin: 5,
@@ -99,12 +114,24 @@ const styles = StyleSheet.create({
         borderColor: 'grey',
     },
     button: {
-        margin: 5,
-        width: 200,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 20,
+        width: RPW(80),
+        backgroundColor: '#FF8400',
+        borderRadius: 100,
+        paddingVertical: 10,
     },
+
+    textButton:
+    {
+        color: 'white',
+    },
+
     switchText: {
         marginVertical: 10,
     },
+
 });
 
 export default LoginSignUp;

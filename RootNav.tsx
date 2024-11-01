@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthContext } from './views/authentication';
+import { AuthContext } from './views/Authentication';
 import LoginSignUp from './views/LoginSignup';
-import MainMenu from './views/mainMenu';
+import MainMenu from './views/Main';
+import entry from './views/Entry';
+import Entry from './views/Entry';
 
 const Stack = createStackNavigator();
 
@@ -19,7 +21,7 @@ function RootNavigator() {
         // If not authenticated, show the SignUp screen
         <Stack.Screen
           name="Login/SignUp"
-          component={LoginSignUp}
+          component={Entry}
           options={{ headerShown: false }}
         />
       )}
