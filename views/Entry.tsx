@@ -25,7 +25,7 @@ const Entry: React.FC = () => {
   return (
     <View style={styles.container}>
       <Image source={logo} style={{ resizeMode: 'contain' }}></Image>
-      <Pressable style={styles.button} onPress={() => navigation.navigate('Login/Signup', { userId: 1 })}>
+      <Pressable style={styles.button} onPress={() => navigation.navigate}>
         <Text style={styles.textButton}> Login </Text>
       </Pressable>
       <Pressable style={styles.button2}>
