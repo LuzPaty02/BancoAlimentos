@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { AuthContext } from './Authentication';
 
@@ -20,54 +21,11 @@ const logo = {
 };
 
 const Entry: React.FC = () => {
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    throw new Error("AuthContext is null");
-  }
-  const { auth } = authContext;
-
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleToggleForm = () => {
-    setIsSignUp(!isSignUp);
-  };
-
-  const handleLogin = () => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("User logged in: " + userCredential.user.email);
-      })
-      .catch((error) => {
-        if (error.code === 'auth/user-not-found') {
-          alert("No user found with this email address.");
-        } else if (error.code === 'auth/wrong-password') {
-          alert("Incorrect password. Please try again.");
-        } else {
-          alert("Login failed: " + error.message);
-        }
-      });
-  };
-
-  const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("User signed up: " + userCredential.user.email);
-      })
-      .catch((error) => {
-        if (error.code === "auth/weak-password") {
-          alert("That password is too weak!");
-        } else {
-          alert("Error: " + error.message);
-        }
-      });
-  };
-
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Image source={logo} style={{ resizeMode: 'contain' }}></Image>
-      <Pressable style={styles.button}>
+      <Pressable style={styles.button} onPress={() => navigation.navigate('Login/Signup', { userId: 1 })}>
         <Text style={styles.textButton}> Login </Text>
       </Pressable>
       <Pressable style={styles.button2}>

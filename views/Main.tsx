@@ -3,7 +3,7 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
 import Maps from './Map';
 
-export default function MainMenu() {
+export default function MainMap() {
   const auth = getAuth();
 
   const handleSignOut = () => {
