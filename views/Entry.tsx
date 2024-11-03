@@ -1,8 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { AuthContext } from './Authentication';
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => {
@@ -25,13 +23,17 @@ const Entry: React.FC = () => {
   return (
     <View style={styles.container}>
       <Image source={logo} style={{ resizeMode: 'contain' }}></Image>
-      <Pressable style={styles.button} onPress={() => navigation.navigate}>
+      <Pressable style={styles.button} onPress={() => {
+        navigation.navigate('Login');
+      }}>
         <Text style={styles.textButton}> Login </Text>
       </Pressable>
-      <Pressable style={styles.button2}>
+      <Pressable style={styles.button2} onPress={() => {
+        navigation.navigate('SignIn');
+      }}>
         <Text style={styles.textButton2}> Sign Up </Text>
       </Pressable>
-    </View>
+    </View >
   );
 };
 

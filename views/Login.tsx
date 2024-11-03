@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from './Authentication';
 
 const screenHeight = Dimensions.get('window').height;
@@ -20,24 +21,21 @@ const logo = {
 };
 
 const Login: React.FC = () => {
+    const navigation = useNavigation();
     const authContext = useContext(AuthContext);
     if (!authContext) {
         throw new Error("AuthContext is null");
     }
     const { auth } = authContext;
 
-    const [isSignUp, setIsSignUp] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    const handleToggleForm = () => {
-        setIsSignUp(!isSignUp);
-    };
 
     const handleLogin = () => {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log("User logged in: " + userCredential.user.email);
+                //navigation.navigate('MainMenu')
             })
             .catch((error) => {
                 if (error.code === 'auth/user-not-found') {
@@ -46,20 +44,6 @@ const Login: React.FC = () => {
                     alert("Incorrect password. Please try again.");
                 } else {
                     alert("Login failed: " + error.message);
-                }
-            });
-    };
-
-    const handleSignUp = () => {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log("User signed up: " + userCredential.user.email);
-            })
-            .catch((error) => {
-                if (error.code === "auth/weak-password") {
-                    alert("That password is too weak!");
-                } else {
-                    alert("Error: " + error.message);
                 }
             });
     };
@@ -88,7 +72,7 @@ const Login: React.FC = () => {
                     />
                 </View>
                 <View>
-                    <Pressable style={styles.button}>
+                    <Pressable style={styles.button} onPress={handleLogin}>
                         <Text style={styles.textButton}> Login </Text>
                     </Pressable>
                 </View>

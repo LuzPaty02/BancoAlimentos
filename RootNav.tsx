@@ -15,18 +15,17 @@ function RootNavigator() {
 
   return (
     <Stack.Navigator>
-      {// If authenticated, show the MainMenu
+      {user ? (
+        <Stack.Screen name="MainMenu" component={MainMap} options={{ headerShown: false }} />
+      ) : (
+        <Stack.Group>
+          <Stack.Screen name="Entry" component={Entry} options={{ headerShown: false }} />
+          <Stack.Screen name="SignIn" component={SignInView} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        </Stack.Group>
+      )
+        // If authenticated, show the MainMenu
       }
-      <Stack.Screen name="SignIn" component={SignInView} options={{ headerShown: false }}/>
-      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
-      <Stack.Screen name="Entry" component={Entry} options={{ headerShown: false }}/>
-      <Stack.Screen
-        name="Login/SignUp"
-        component={LoginSignUp}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen name="MainMenu" component={MainMap} />
-      
     </Stack.Navigator>
   );
 }
