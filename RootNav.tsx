@@ -1,8 +1,11 @@
 import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthContext } from './views/authentication';
+import { AuthContext } from './views/Authentication';
 import LoginSignUp from './views/LoginSignup';
-import MainMenu from './views/mainMenu';
+import MainMap from './views/Main';
+import Entry from './views/Entry';
+import Login from './views/Login';
+import SignInView from './views/SignIn';
 
 const Stack = createStackNavigator();
 
@@ -13,16 +16,16 @@ function RootNavigator() {
   return (
     <Stack.Navigator>
       {user ? (
-        // If authenticated, show the MainMenu
-        <Stack.Screen name="MainMenu" component={MainMenu} />
+        <Stack.Screen name="MainMenu" component={MainMap} options={{ headerShown: false }} />
       ) : (
-        // If not authenticated, show the SignUp screen
-        <Stack.Screen
-          name="Login/SignUp"
-          component={LoginSignUp}
-          options={{ headerShown: false }}
-        />
-      )}
+        <Stack.Group>
+          <Stack.Screen name="Entry" component={Entry} options={{ headerShown: false }} />
+          <Stack.Screen name="SignIn" component={SignInView} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        </Stack.Group>
+      )
+        // If authenticated, show the MainMenu
+      }
     </Stack.Navigator>
   );
 }
