@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getAuth, Auth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { getFirestore, Firestore } from 'firebase/firestore';
 
 //Importing the environment variables
 const firebaseConfig = {
@@ -15,8 +15,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+export const auth: Auth = getAuth(app);
+export const db: Firestore = getFirestore(app);
 
 
 //createContext() is a react hook that allows components in a tree to easily access shared data 
