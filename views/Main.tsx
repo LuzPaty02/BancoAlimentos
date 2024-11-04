@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { getAuth, signOut } from 'firebase/auth';
-import Maps from './Map';
+// import Maps from './Map';
+import AddNecesidad from './AddNecesidad';
 
 export default function MainMap() {
   const auth = getAuth();
@@ -18,8 +19,9 @@ export default function MainMap() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Mapa de Donantes Activos</Text>
-      <Maps />
+      {/* <Text style={styles.header}>Mapa de Donantes Activos</Text> */}
+      {/* <Maps /> */}
+      <AddNecesidad />
       <View style={styles.button}>
         <Button title="Sign Out" onPress={handleSignOut} />
       </View>
