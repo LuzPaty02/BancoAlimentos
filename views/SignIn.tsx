@@ -57,7 +57,7 @@ const SignInView: React.FC = () => {
                     <Text style={styles.switchText}>Name</Text>
                     <TextInput
                         style={styles.inputField}
-                        placeholder="Viejo Puto"
+                        placeholder="Name"
                         value={nombre}
                         onChangeText={setNombre}
                     />

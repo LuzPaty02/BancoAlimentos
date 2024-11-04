@@ -11,7 +11,8 @@ const AddNecesidad = () => {
   const [prioridad, setPrioridad] = useState('');
   const [necesidad, setNecesidad] = useState('');
 
-  const { db } = useContext(AuthContext) || {}; // Access db from context
+  const authContext = useContext(AuthContext); // Access context
+  const db = authContext ? authContext.db : null; // Safely access db
 
   const addNecesidad = async () => {
     if (!db) {
@@ -20,14 +21,14 @@ const AddNecesidad = () => {
     }
     try {
       await addDoc(collection(db, 'necesidades'), {
-        caducidad: Timestamp.fromDate(new Date(caducidad)),
-        categoria: {
-          tipo,
-          tipoEncoded: parseInt(tipoEncoded, 10)
+        Caducidad: Timestamp.fromDate(new Date(caducidad)),
+        Categoria: {
+          Tipo: tipo,
+          TipoEncoded: parseInt(tipoEncoded, 10)
         },
-        fecha_de_creacion: Timestamp.fromDate(new Date(fechaCreacion)),
-        prioridad: parseInt(prioridad, 10),
-        necesidad
+        Fecha_de_creacion: Timestamp.fromDate(new Date(fechaCreacion)),
+        Prioridad: parseInt(prioridad, 10),
+        Necesidad: necesidad
       });
       alert('Data added successfully');
     } catch (error) {
@@ -44,14 +45,14 @@ const AddNecesidad = () => {
         placeholder="Caducidad"
         keyboardType="numeric"
       />
-      
+
       <Text>Tipo de Categoria:</Text>
       <TextInput
         value={tipo}
         onChangeText={setTipo}
         placeholder="Tipo"
       />
-      
+
       <Text>Tipo Encoded:</Text>
       <TextInput
         value={tipoEncoded}
@@ -59,7 +60,7 @@ const AddNecesidad = () => {
         placeholder="Tipo Encoded"
         keyboardType="numeric"
       />
-      
+
       <Text>Fecha de Creacion (YYYY-MM-DD):</Text>
       <TextInput
         value={fechaCreacion}
@@ -67,7 +68,7 @@ const AddNecesidad = () => {
         placeholder="Fecha de Creacion"
         keyboardType="numeric"
       />
-      
+
       <Text>Prioridad:</Text>
       <TextInput
         value={prioridad}
@@ -75,14 +76,14 @@ const AddNecesidad = () => {
         placeholder="Prioridad"
         keyboardType="numeric"
       />
-      
+
       <Text>Necesidad:</Text>
       <TextInput
         value={necesidad}
         onChangeText={setNecesidad}
         placeholder="Necesidad"
       />
-      
+
       <Button title="Add Necesidad" onPress={addNecesidad} />
     </View>
   );

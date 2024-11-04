@@ -1,10 +1,11 @@
+// MainMap.js
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet, Text } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
-// import Maps from './Map';
-import AddNecesidad from './AddNecesidad';
 
-export default function MainMap() {
+export default function Main() {
+  const navigation = useNavigation<NavigationProp<any>>(); // Navigation prop for navigating between screens
   const auth = getAuth();
 
   const handleSignOut = () => {
@@ -19,11 +20,20 @@ export default function MainMap() {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.header}>Mapa de Donantes Activos</Text> */}
-      {/* <Maps /> */}
-      <AddNecesidad />
-      <View style={styles.button}>
-        <Button title="Sign Out" onPress={handleSignOut} />
+      <Text>Main Menu</Text>
+      <View style={styles.buttonContainer}>
+        <View style={styles.button}>
+          <Button title="Display Map" onPress={() => navigation.navigate('Maps')} />
+        </View>
+        <View style={styles.button}>
+          <Button title="Display Necesidades" onPress={() => navigation.navigate('DisplayNecesidades')} />
+        </View>
+        <View style={styles.button}>
+          <Button title="Add Necesidad" onPress={() => navigation.navigate('AddNecesidad')} />
+        </View>
+        <View style={styles.button}>
+          <Button title="Sign Out" onPress={handleSignOut} />
+        </View>
       </View>
     </View>
   );
@@ -31,20 +41,15 @@ export default function MainMap() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensures the container takes up the full screen
-    padding: 16,
-    justifyContent: 'space-between', // Spreads out items
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#ffffff',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 16,
+  buttonContainer: {
+    width: '80%',
   },
   button: {
-    marginBottom: 20, // Adds some margin to the bottom
-    justifyContent: 'flex-end',
+    marginVertical: 5,
   },
 });
-
