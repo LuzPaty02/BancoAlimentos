@@ -19,7 +19,7 @@ export default function MainMap() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Mapa de Donantes Activos</Text>
-      <Maps />
+      <Maps/>
       <View style={styles.button}>
         <Button title="Sign Out" onPress={handleSignOut} />
       </View>
