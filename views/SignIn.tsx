@@ -3,7 +3,8 @@ import Checkbox from 'expo-checkbox';
 import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from './Authentication';
+import { AuthContext, db } from './Authentication';
+import { doc, setDoc } from 'firebase/firestore';
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => {
@@ -33,21 +34,34 @@ const SignInView: React.FC = () => {
     const [nombre, setNombre] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
-    const [isChecked, setChecked] = useState(false);
+    const [isCompany, setIsCompany] = useState(false);
+    const [isBAMX, setIsBAMX] = useState(false);
 
-    const handleSignUp = () => {
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log("User signed up: " + userCredential.user.email);
-                //navigation.navigate('MainMenu')
-            })
-            .catch((error) => {
-                if (error.code === "auth/weak-password") {
-                    alert("That password is too weak!");
-                } else {
-                    alert("Error: " + error.message);
-                }
+    const handleSignUp = async () => {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userId = userCredential.user.uid;
+
+            // Determine the account type
+            const accountType = isBAMX ? 'food bank staff' : isCompany ? 'donor company' : 'regular donor';
+
+            // Add user details to Firestore
+            await setDoc(doc(db, 'users', userId), {
+                email,
+                nombre,
+                phone,
+                accountType
             });
+
+            console.log("User signed up with account type: " + accountType);
+            // navigation.navigate('Main');
+        } catch (error: any) {
+            if (error.code === "auth/weak-password") {
+                alert("That password is too weak!");
+            } else {
+                alert("Error: " + error.message);
+            }
+        }
     };
 
     return (
@@ -57,7 +71,7 @@ const SignInView: React.FC = () => {
                     <Text style={styles.switchText}>Name</Text>
                     <TextInput
                         style={styles.inputField}
-                        placeholder="Viejo Puto"
+                        placeholder="Your Name"
                         value={nombre}
                         onChangeText={setNombre}
                     />
@@ -93,7 +107,7 @@ const SignInView: React.FC = () => {
                 </View>
                 <View style={styles.group}>
                     <View style={styles.section}>
-                        <Checkbox style={styles.checkbox} color={'black'} value={isChecked} onValueChange={setChecked} />
+                        <Checkbox style={styles.checkbox} color={'black'} value={isCompany} onValueChange={setIsCompany} />
                         <Text style={styles.switchText}>Register as a company account</Text>
                     </View>
                     <View>
@@ -104,7 +118,7 @@ const SignInView: React.FC = () => {
                 </View>
                 <View style={styles.group}>
                     <View style={styles.section}>
-                        <Checkbox style={styles.checkbox} color={'black'} value={isChecked} onValueChange={setChecked} />
+                        <Checkbox style={styles.checkbox} color={'black'} value={isBAMX} onValueChange={setIsBAMX} />
                         <Text style={styles.switchText}>Register as a BAMX account</Text>
                     </View>
                     <View>
@@ -114,8 +128,8 @@ const SignInView: React.FC = () => {
                     </View>
                 </View>
                 <View>
-                    <Pressable style={styles.button}>
-                        <Text style={styles.textButton} onPress={handleSignUp}> Register </Text>
+                    <Pressable style={styles.button} onPress={handleSignUp}>
+                        <Text style={styles.textButton}> Register </Text>
                     </Pressable>
                 </View>
             </View>
