@@ -3,6 +3,7 @@ import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from './Authentication';
+import { auth, db } from './Authentication';
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => {
@@ -20,32 +21,42 @@ const logo = {
     height: RPH(20),
 };
 
-const Login: React.FC = () => {
-    const navigation = useNavigation();
-    const authContext = useContext(AuthContext);
-    if (!authContext) {
-        throw new Error("AuthContext is null");
-    }
-    const { auth } = authContext;
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleLogin = () => {
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log("User logged in: " + userCredential.user.email);
-                //navigation.navigate('MainMenu')
-            })
-            .catch((error) => {
-                if (error.code === 'auth/user-not-found') {
-                    alert("No user found with this email address.");
-                } else if (error.code === 'auth/wrong-password') {
-                    alert("Incorrect password. Please try again.");
-                } else {
-                    alert("Login failed: " + error.message);
-                }
-            });
+const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigation();
+  
+    const handleLogin = async (e) => {
+      e.preventDefault();
+  
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userId = userCredential.user.uid;
+  
+        // Fetch user account type from Firestore
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        const userType = userDoc.data()?.accountType;
+  
+        // Navigate based on account type
+        switch (userType) {
+          case 'regular donor':
+            navigate('/regular-donor-dashboard');
+            break;
+          case 'donor company':
+            navigate('/company-dashboard');
+            break;
+          case 'food bank staff':
+            navigate('/staff-dashboard');
+            break;
+          default:
+            setError('Unknown account type');
+            break;
+        }
+      } catch (err) {
+        setError('Failed to log in');
+        console.error(err);
+      }
     };
 
     return (

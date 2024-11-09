@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const screenHeight = Dimensions.get('window').height;
