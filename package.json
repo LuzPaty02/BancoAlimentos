@@ -11,6 +11,8 @@
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
     "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-firebase/app": "^21.3.0",
+    "@react-native-firebase/firestore": "^21.4.0",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "@react-navigation/stack": "^6.4.1",
