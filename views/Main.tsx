@@ -4,7 +4,7 @@ import { getAuth, signOut } from 'firebase/auth';
 // import Maps from './Map';
 import AddNecesidad from './AddNecesidad';
 
-export default function MainMap() {
+export default function Main() {
   const auth = getAuth();
 
   const handleSignOut = () => {

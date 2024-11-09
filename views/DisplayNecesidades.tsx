@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
+import Maps from './Map';
 
 interface Necesidad {
   id: string;
@@ -64,6 +65,7 @@ const DisplayNecesidades = () => {
           <Text>No necesidades found.</Text>
         )}
       </View>
+      <Maps/>
     </ScrollView>
   );
 };

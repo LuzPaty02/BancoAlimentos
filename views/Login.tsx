@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword} from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from './Authentication';
 import { auth, db } from './Authentication';
+import { doc, getDoc } from 'firebase/firestore';
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => {
@@ -27,7 +27,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigation();
   
-    const handleLogin = async (e) => {
+    const handleLogin = async (e:any) => {
       e.preventDefault();
   
       try {
@@ -41,13 +41,14 @@ const Login = () => {
         // Navigate based on account type
         switch (userType) {
           case 'regular donor':
-            navigate('/regular-donor-dashboard');
+            navigate.navigate('/regular-donor-dashboard');
             break;
           case 'donor company':
-            navigate('/company-dashboard');
+            navigate.navigate('/company-dashboard');
             break;
           case 'food bank staff':
-            navigate('/staff-dashboard');
+            console.log('Food bank staff');
+            navigate.navigate('Maps');
             break;
           default:
             setError('Unknown account type');
