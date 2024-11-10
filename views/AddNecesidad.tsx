@@ -1,7 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions, Pressable, Button, Text } from 'react-native';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
+import Maps from './Map';
+import { ScrollView } from 'react-native-gesture-handler';
+
+const screenHeight = Dimensions.get('window').height;
+const RPH = (percentage: any) => {
+  return (percentage / 100) * screenHeight;
+};
+
+const screenWidth = Dimensions.get('window').width;
+const RPW = (percentage: any) => {
+  return (percentage / 100) * screenWidth;
+};
 
 const AddNecesidad = () => {
   const [caducidad, setCaducidad] = useState('');
@@ -37,56 +49,117 @@ const AddNecesidad = () => {
   };
 
   return (
-    <View>
-      <Text>Caducidad (YYYY-MM-DD):</Text>
-      <TextInput
-        value={caducidad}
-        onChangeText={setCaducidad}
-        placeholder="Caducidad"
-        keyboardType="numeric"
-      />
+    <ScrollView style={styles.container}>
+      <View style={styles.box}>
+        <Text>Caducidad (YYYY-MM-DD):</Text>
+        <TextInput
+          value={caducidad}
+          onChangeText={setCaducidad}
+          placeholder="Caducidad"
+          keyboardType="numeric"
+        />
 
-      <Text>Tipo de Categoria:</Text>
-      <TextInput
-        value={tipo}
-        onChangeText={setTipo}
-        placeholder="Tipo"
-      />
+        <Text>Tipo de Categoria:</Text>
+        <TextInput
+          value={tipo}
+          onChangeText={setTipo}
+          placeholder="Tipo"
+        />
 
-      <Text>Tipo Encoded:</Text>
-      <TextInput
-        value={tipoEncoded}
-        onChangeText={setTipoEncoded}
-        placeholder="Tipo Encoded"
-        keyboardType="numeric"
-      />
+        <Text>Tipo Encoded:</Text>
+        <TextInput
+          value={tipoEncoded}
+          onChangeText={setTipoEncoded}
+          placeholder="Tipo Encoded"
+          keyboardType="numeric"
+        />
 
-      <Text>Fecha de Creacion (YYYY-MM-DD):</Text>
-      <TextInput
-        value={fechaCreacion}
-        onChangeText={setFechaCreacion}
-        placeholder="Fecha de Creacion"
-        keyboardType="numeric"
-      />
+        <Text>Fecha de Creacion (YYYY-MM-DD):</Text>
+        <TextInput
+          value={fechaCreacion}
+          onChangeText={setFechaCreacion}
+          placeholder="Fecha de Creacion"
+          keyboardType="numeric"
+        />
 
-      <Text>Prioridad:</Text>
-      <TextInput
-        value={prioridad}
-        onChangeText={setPrioridad}
-        placeholder="Prioridad"
-        keyboardType="numeric"
-      />
+        <Text>Prioridad:</Text>
+        <TextInput
+          value={prioridad}
+          onChangeText={setPrioridad}
+          placeholder="Prioridad"
+          keyboardType="numeric"
+        />
 
-      <Text>Necesidad:</Text>
-      <TextInput
-        value={necesidad}
-        onChangeText={setNecesidad}
-        placeholder="Necesidad"
-      />
+        <Text>Necesidad:</Text>
+        <TextInput
+          value={necesidad}
+          onChangeText={setNecesidad}
+          placeholder="Necesidad"
+        />
 
-      <Button title="Add Necesidad" onPress={addNecesidad} />
-    </View>
+        <Button title="Add Necesidad" onPress={addNecesidad} />
+        <Maps />
+      </View>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'left',
+    flex: 1,
+    fontFamily: 'Roboto',
+  },
+  box: {
+    textAlign: 'left',
+    borderColor: '#D9D9D9',
+    borderWidth: 2,
+    borderRadius: 8,
+    padding: 24,
+    gap: 24,
+  },
+  inputField: {
+    padding: 10,
+    borderWidth: 0.5,
+    borderRadius: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    width: RPW(60),
+    borderColor: 'grey',
+    lineHeight: 16,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: RPW(60),
+    backgroundColor: '#FF8400',
+    borderRadius: 8,
+    gap: 16,
+    paddingVertical: 10,
+  },
+  group: {
+    gap: 8,
+    alignContent: 'center',
+  },
+  textButton:
+  {
+    color: 'white',
+  },
+
+  switchText: {
+    width: RPW(40),
+    textAlign: 'left',
+    fontSize: 16,
+  },
+
+  linkStyle: {
+    textAlign: 'left',
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
+  },
+
+});
 
 export default AddNecesidad;

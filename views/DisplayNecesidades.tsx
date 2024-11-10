@@ -65,7 +65,7 @@ const DisplayNecesidades = () => {
           <Text>No necesidades found.</Text>
         )}
       </View>
-      <Maps/>
+      
     </ScrollView>
   );
 };
