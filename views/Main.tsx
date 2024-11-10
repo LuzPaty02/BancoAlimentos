@@ -23,7 +23,7 @@ export default function Main() {
       {/* <Maps /> */}
       <AddNecesidad />
       <View style={styles.button}>
-        <Button title="Sign Out" onPress={handleSignOut} />
+        {/*<Button title="Sign Out" onPress={handleSignOut} />*/}
       </View>
     </View>
   );

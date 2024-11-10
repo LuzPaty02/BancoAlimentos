@@ -1,127 +1,187 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions, Pressable, Button, Text } from 'react-native';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
-import AddNecesidad from './AddNecesidad';
-import { collection, addDoc } from 'firebase/firestore';
+import DateTimePicker from 'react-native-ui-datepicker';
+import dayjs from 'dayjs';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const AdminProfile: React.FC = () => {
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    throw new Error("AuthContext is null");
-  }
+const screenHeight = Dimensions.get('window').height;
+const RPH = (percentage: any) => {
+  return (percentage / 100) * screenHeight;
+};
 
-  const { db, user } = authContext;
-  const [necesidad, setNecesidad] = useState('');
+const screenWidth = Dimensions.get('window').width;
+const RPW = (percentage: any) => {
+  return (percentage / 100) * screenWidth;
+};
+
+const AddNecesidad = () => {
+  const [caducidad, setCaducidad] = useState(dayjs());
   const [tipo, setTipo] = useState('');
   const [tipoEncoded, setTipoEncoded] = useState('');
+  const [fechaCreacion, setFechaCreacion] = useState('');
   const [prioridad, setPrioridad] = useState('');
-  const [caducidad, setCaducidad] = useState('');
+  const [necesidad, setNecesidad] = useState('');
 
-  const [error, setError] = useState<string | null>(null);
-  const handleError = (err: unknown) => {
-    const errorMessage = (err as Error).message;
-    setError(errorMessage);
+  const authContext = useContext(AuthContext); // Access context
+  const db = authContext ? authContext.db : null; // Safely access db
+
+  const handleDateChange = ({ date }: { date: Date }) => {
+    if (date instanceof Date && !isNaN(date.getTime())) {
+      setCaducidad(date as any);
+    } else {
+      console.error("Invalid date selected:", date);
+    }
   };
 
-  const handleAddNecesidad = async () => {
-    if (!necesidad || !tipo || !tipoEncoded || !prioridad || !caducidad) {
-      alert("Por favor, completa todos los campos.");
+  const addNecesidad = async () => {
+    if (!db) {
+      console.error("Firestore database not available.");
       return;
     }
-
     try {
-      const docRef = await addDoc(collection(db, 'necesidades'), {
-        necesidad: necesidad,
-        categoria: {
-          tipo: tipo,
-          tipoEncoded: parseInt(tipoEncoded),
+      await addDoc(collection(db, 'necesidades'), {
+        caducidad: caducidad,
+        Categoria: {
+          Tipo: tipo,
+          TipoEncoded: parseInt(tipoEncoded, 10)
         },
-        prioridad: parseInt(prioridad),
-        caducidad: new Date(caducidad),
-        'fecha de creacion': new Date(),
+        Fecha_de_creacion: Timestamp.fromDate(new Date(fechaCreacion)),
+        Prioridad: parseInt(prioridad, 10),
+        Necesidad: necesidad
       });
-      alert(`Necesidad añadida con ID: ${docRef.id}`);
-      setNecesidad('');
-      setTipo('');
-      setTipoEncoded('');
-      setPrioridad('');
-      setCaducidad('');
+      alert('Data added successfully');
     } catch (error) {
-      handleError(error);
+      console.error('Error adding document: ', error);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Admin Profile - Añadir Necesidad</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Necesidad"
-        value={necesidad}
-        onChangeText={setNecesidad}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Tipo"
-        value={tipo}
-        onChangeText={setTipo}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Tipo Encoded (número)"
-        keyboardType="numeric"
-        value={tipoEncoded}
-        onChangeText={setTipoEncoded}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Prioridad (número)"
-        keyboardType="numeric"
-        value={prioridad}
-        onChangeText={setPrioridad}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Caducidad (YYYY-MM-DD)"
-        value={caducidad}
-        onChangeText={setCaducidad}
-      />
-      <Pressable style={styles.button} onPress={handleAddNecesidad}>
-        <Text style={styles.buttonText}>Añadir Necesidad</Text>
-      </Pressable>
+      <Text style={styles.title}>Añadir Necesidad</Text>
+      <View style={styles.box}>
+        <View style={styles.group}>
+          <Text>Caducidad:</Text>
+          <View style={styles.calendarContainer}>
+            <DateTimePicker
+              date={caducidad}
+              mode="single"
+              selectedItemColor='#FF8400'
+              minDate={new Date()}
+              headerContainerStyle={{ borderColor: 'grey', borderWidth: 1 }}
+
+              onChange={(params) => setCaducidad(params.date as any)}
+            />
+          </View>
+        </View>
+        <View style={styles.group}>
+          <Text>Categoria de la necesidad:</Text>
+          <TextInput style={styles.inputField}
+            value={tipo}
+            onChangeText={setTipo}
+            placeholder="Tipo"
+          />
+        </View>
+        <View style={styles.group}>
+          <Text>Fecha de Publicacion (YYYY-MM-DD):</Text>
+          <TextInput style={styles.inputField}
+            value={fechaCreacion}
+            onChangeText={setFechaCreacion}
+            placeholder="Fecha de Creacion"
+            keyboardType="numeric"
+          />
+        </View>
+
+        <View style={styles.group}>
+          <Text>Prioridad:</Text>
+          <TextInput style={styles.inputField}
+            value={prioridad}
+            onChangeText={setPrioridad}
+            placeholder="Prioridad"
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={styles.group}>
+          <Text>Nombre de la necesidad:</Text>
+          <TextInput style={styles.inputField}
+            value={necesidad}
+            onChangeText={setNecesidad}
+            placeholder="Necesidad"
+          />
+        </View>
+        <Pressable style={styles.button} onPress={addNecesidad}>
+          <Text style={styles.textButton}> Add Necesidad </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    textAlign: 'left',
+    fontFamily: 'Roboto',
   },
   title: {
     fontSize: 24,
     marginBottom: 16,
+
   },
-  input: {
-    width: '80%',
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
+  calendarContainer: {
+    borderBlockColor: 'grey',
     borderRadius: 5,
-    marginBottom: 12,
+    borderWidth: 1
+  },
+  box: {
+    textAlign: 'left',
+    borderColor: '#D9D9D9',
+    borderWidth: 2,
+    borderRadius: 8,
+    padding: 24,
+    gap: 24,
+  },
+  inputField: {
+    padding: 10,
+    borderWidth: 0.5,
+    borderRadius: 5,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    width: RPW(60),
+    borderColor: 'grey',
+    lineHeight: 16,
   },
   button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: RPW(60),
     backgroundColor: '#FF8400',
+    borderRadius: 8,
+    gap: 16,
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
   },
-  buttonText: {
+  group: {
+    gap: 8,
+    alignContent: 'center',
+  },
+  textButton:
+  {
     color: 'white',
+  },
+
+  switchText: {
+    width: RPW(40),
+    textAlign: 'left',
     fontSize: 16,
+  },
+
+  linkStyle: {
+    textAlign: 'left',
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
   },
 });
 
-export default AdminProfile;
+export default AddNecesidad;

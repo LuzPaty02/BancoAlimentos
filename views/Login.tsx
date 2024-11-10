@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { signInWithEmailAndPassword} from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './Authentication';
