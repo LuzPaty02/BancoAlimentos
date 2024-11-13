@@ -20,7 +20,7 @@ const AddNecesidad = () => {
   const [caducidad, setCaducidad] = useState(dayjs());
   const [tipo, setTipo] = useState('');
   const [tipoEncoded, setTipoEncoded] = useState('');
-  const [fechaCreacion, setFechaCreacion] = useState('');
+  const [fechaCreacion, setFechaCreacion] = useState(dayjs().toISOString());
   const [prioridad, setPrioridad] = useState('');
   const [necesidad, setNecesidad] = useState('');
 
@@ -35,19 +35,26 @@ const AddNecesidad = () => {
     }
   };
 
+
   const addNecesidad = async () => {
     if (!db) {
       console.error("Firestore database not available.");
       return;
     }
+    // Validate caducidad and fechaCreacion
+    const validCaducidad = caducidad.isValid() ? caducidad.toDate() : new Date();
+    const validFechaCreacion = dayjs(fechaCreacion).isValid()
+      ? dayjs(fechaCreacion).toDate()
+      : new Date();
+
     try {
       await addDoc(collection(db, 'necesidades'), {
-        caducidad: caducidad,
+        caducidad: validCaducidad,
         Categoria: {
           Tipo: tipo,
           TipoEncoded: parseInt(tipoEncoded, 10)
         },
-        Fecha_de_creacion: Timestamp.fromDate(new Date(fechaCreacion)),
+        Fecha_de_creacion: Timestamp.fromDate(new Date(validFechaCreacion)),
         Prioridad: parseInt(prioridad, 10),
         Necesidad: necesidad
       });
@@ -64,13 +71,21 @@ const AddNecesidad = () => {
           <Text>Caducidad:</Text>
           <View style={styles.calendarContainer}>
             <DateTimePicker
-              date={caducidad}
+              date={caducidad.toDate()}
               mode="single"
               selectedItemColor='#FF8400'
               minDate={new Date()}
               headerContainerStyle={{ borderColor: 'grey', borderWidth: 1 }}
 
-              onChange={(params) => setCaducidad(params.date as any)}
+              onChange={(params) => {
+                if (params?.date) {
+                  const normalizedDate = dayjs(params.date); // Ensure properly handled
+                  console.log("Valid date selected:", normalizedDate.toISOString());
+                  setCaducidad(normalizedDate);
+                } else {
+                  console.error("Invalid date selected:", params?.date);
+                }
+              }}
             />
           </View>
         </View>
