@@ -21,6 +21,7 @@ const Maps: React.FC = () => {
     { id: '2', latitude: 20.7315, longitude: -103.3700, title: 'Donante 2', category: 'Ropa', status: 'no disponible' },
     { id: '3', latitude: 20.7280, longitude: -103.3680, title: 'Donante 3', category: 'Alimentos', status: 'disponible' },
     { id: '4', latitude: 20.7270, longitude: -103.3660, title: 'Donante 4', category: 'Medicamentos', status: 'no disponible' },
+    { id: '5', latitude: 20.7454, longitude: -103.4405, title: 'Donante 5', category: 'baddies', status: 'disponible' },
   ];
 
   // Filtra las ubicaciones según la etiqueta seleccionada
@@ -28,26 +29,11 @@ const Maps: React.FC = () => {
     ? locations.filter((location) => location.category === filter)
     : locations;
 
-  // Ajusta el mapa para mostrar todas las ubicaciones visibles
-  useEffect(() => {
-    if (filteredLocations.length > 0 && mapRef.current) {
-      mapRef.current.fitToCoordinates(
-        filteredLocations.map((location) => ({
-          latitude: location.latitude,
-          longitude: location.longitude,
-        })),
-        {
-          edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-          animated: true,
-        }
-      );
-    }
-  }, [filteredLocations]);
 
   return (
     <View style={styles.container}>
       <View style={styles.filterContainer}>
-        {['Todos', 'Medicamentos', 'Ropa', 'Alimentos'].map((category) => (
+        {['Todos', 'Medicamentos', 'Ropa', 'Alimentos', 'baddies'].map((category) => (
           <TouchableOpacity
             key={category}
             style={[
