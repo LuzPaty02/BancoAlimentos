@@ -1,6 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, Auth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { browserLocalPersistence, setPersistence, initializeAuth } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, Firestore } from 'firebase/firestore';
 
 //Importing the environment variables
@@ -15,7 +17,12 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth: Auth = getAuth(app);
+export const auth: Auth = initializeAuth(app);
+
+setPersistence(auth, browserLocalPersistence).catch((error) => {
+  console.error("Error setting persistence:", error);
+});
+
 export const db: Firestore = getFirestore(app);
 
 
