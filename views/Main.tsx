@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { getAuth, signOut } from 'firebase/auth';
-import AddNecesidad from './AddNecesidad';
 
 export default function Main() {
   const auth = getAuth();
