@@ -4,7 +4,7 @@ import { View, TextInput, Text, StyleSheet, Image, Dimensions, Pressable } from 
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext, db } from './Authentication';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, GeoPoint, setDoc } from 'firebase/firestore';
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => {
@@ -46,13 +46,31 @@ const SignInView: React.FC = () => {
             const accountType = isBAMX ? 'food bank staff' : isCompany ? 'donor company' : 'regular donor';
 
             // Add user details to Firestore
-            await setDoc(doc(db, 'users', userId), {
+            const userData: {
+                email: string;
+                nombre: string;
+                phone: string;
+                accountType: string;
+                ubicacion?: GeoPoint; // Use GeoPoint for location
+                uid?: string;
+            } = { //Initialize default values for required fields
                 email,
                 nombre,
                 phone,
-                accountType
-            });
-
+                accountType,
+            };
+            //Initialize optional fields based on account type
+            if (accountType === 'donor company') {
+                userData.ubicacion = new GeoPoint(0, 0); // Default location [0° N, 0° E]
+            }
+    
+            if (accountType === 'food bank staff') {
+                userData.uid = userId; // Add UID for food bank staff
+            }
+    
+            // Add user details to Firestore
+            await setDoc(doc(db, 'users', userId), userData);
+    
             console.log("User signed up with account type: " + accountType);
             // navigation.navigate('Main');
         } catch (error: any) {

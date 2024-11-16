@@ -4,7 +4,6 @@ import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => {
@@ -26,15 +25,6 @@ const AddNecesidad = () => {
 
   const authContext = useContext(AuthContext); // Access context
   const db = authContext ? authContext.db : null; // Safely access db
-
-  const handleDateChange = ({ date }: { date: Date }) => {
-    if (date instanceof Date && !isNaN(date.getTime())) {
-      setCaducidad(date as any);
-    } else {
-      console.error("Invalid date selected:", date);
-    }
-  };
-
 
   const addNecesidad = async () => {
     if (!db) {

@@ -1,0 +1,42 @@
+Lista de comandos en Kali para el server 
+
+sudo nano /etc/apache2/sites-available/your-domain.conf
+
+
+<VirtualHost *:443>
+    ServerAdmin webmaster@localhost
+    ServerName edwinmaster589.tech
+    ServerAlias www.edwinmaster589.tech
+
+    SSLEngine on
+    SSLCertificateFile /media/sf_ssl-practice/certificate.crt
+    SSLCertificateKeyFile /media/sf_ssl-practice/edwinmaster589.key
+    SSLCertificateChainFile /media/sf_ssl-practice/ca_bundle.crt
+
+    ProxyPreserveHost On
+    ProxyPass / http://localhost:3000/
+    ProxyPassReverse / http://localhost:3000/
+
+    ErrorLog ${APACHE_LOG_DIR}/edwinmaster589-error.log
+    CustomLog ${APACHE_LOG_DIR}/edwinmaster589-access.log combined
+</VirtualHost>
+
+
+
+sudo a2ensite your-domain.conf
+
+
+sudo a2dissite 000-default.conf
+sudo a2dissite default-ssl.conf
+
+
+sudo systemctl reload apache2
+
+
+curl -k https://edwinmaster589.tech
+
+
+node index.js
+
+
+"Server is running and accessible through the certified domain!"
