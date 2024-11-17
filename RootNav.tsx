@@ -8,6 +8,7 @@ import SignInView from './views/SignIn';
 import Maps from './views/Map'; // Add your Map view
 import DisplayNecesidades from './views/DisplayNecesidades';
 import AddNecesidad from './views/AddNecesidad';
+import DonorProfile from './views/DonorProfile';
 
 const Stack = createStackNavigator();
 
@@ -24,6 +25,12 @@ function RootNavigator() {
           <Stack.Screen name="Maps" component={Maps} options={{ title: 'Display Map' }} />
           <Stack.Screen name="DisplayNecesidades" component={DisplayNecesidades} options={{ title: 'Necesidades Publicadas' }} />
           <Stack.Screen name="AddNecesidad" component={AddNecesidad} options={{ title: 'Add Necesidad' }} />
+          <Stack.Screen 
+            name="DonorProfile" 
+            options={{ title: 'Donor Profile' }}
+          >
+            {props => <DonorProfile {...props} userId={user.uid} />}
+          </Stack.Screen>
         </Stack.Group>
       ) : (
         // Group for unauthenticated user screens
