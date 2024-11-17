@@ -33,6 +33,9 @@ export default function Main() {
         <View style={styles.button}>
           <Button title="Sign Out" onPress={handleSignOut} />
         </View>
+        <View style={styles.button}>
+          <Button title="Donor Profile" onPress={() => navigation.navigate('DonorProfile')} />
+        </View>
       </View>
     </View>
   );
