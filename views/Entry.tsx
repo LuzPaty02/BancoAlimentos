@@ -19,7 +19,7 @@ const logo = {
 };
 
 const Entry: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
       <Image source={logo} style={{ resizeMode: 'contain' }}></Image>

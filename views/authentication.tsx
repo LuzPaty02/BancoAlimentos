@@ -19,6 +19,8 @@ export const auth: Auth = getAuth(app);
 export const db: Firestore = getFirestore(app);
 
 
+
+
 //createContext() is a react hook that allows components in a tree to easily access shared data 
 //centralized access to Firebase services and the authenticated user's state
 // allowing child components to easily access these resources throughout the application 
