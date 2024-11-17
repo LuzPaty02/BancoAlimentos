@@ -1,146 +1,150 @@
-import React, { useState, useContext } from 'react';
-import { View, StyleSheet, Text, Alert, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { updateDoc, GeoPoint, doc } from 'firebase/firestore';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext, db } from './Authentication';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { useNavigation } from '@react-navigation/native';
+import { decryptData } from '../encrypt'; // Import decrypt function
 
+interface ProfileData {
+  nombre: string;
+  email: string;
+  phone: string;
+  accountType: string;
+  ubicacion?: {
+    latitude: number;
+    longitude: number;
+  };
+}
 
 const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation() as any;
+
   const authContext = useContext(AuthContext);
   if (!authContext) {
-    throw new Error("AuthContext is null");
+    throw new Error('AuthContext is null');
   }
-  const { auth } = authContext;
-  const [address, setAddress] = useState('');
-  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  console.log('Loaded Google Maps API Key:', process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY);
+  useEffect(() => {
+    const fetchAndDecryptProfileData = async () => {
+      try {
+        setLoading(true);
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          const encryptedData = userDoc.data();
+          console.log('Fetched Encrypted:', encryptedData.email);
+          console.log('Decrypted Logs — Emails decrypted:', decryptData(encryptedData.email));
 
-  const saveLocation = async () => {
-    if (!location) {
-      Alert.alert('Error', 'Please select a valid address from the suggestions.');
-      return;
-    }
 
-    try {
-      const userDoc = doc(db, 'users', userId);
-      await updateDoc(userDoc, {
-        ubicacion: new GeoPoint(location.latitude, location.longitude),
-      });
-      Alert.alert('Success', 'Location updated successfully!');
+          // Decrypt data
+          const decryptedEmail = await decryptData(encryptedData.email);
+          const decryptedNombre = await decryptData(encryptedData.nombre);
+          const decryptedPhone = await decryptData(encryptedData.phone);
+          console.log('Decrypted Data:', { decryptedEmail, decryptedNombre, decryptedPhone });
 
-      // Log success only after successful update
-      console.log('Location updated successfully:', location);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to update location.');
-      console.error('Failed to update location:', error); //  for debugging
-    }
-  };
+          setProfileData({
+            nombre: decryptedNombre,
+            email: decryptedEmail,
+            phone: decryptedPhone,
+            accountType: encryptedData.accountType,
+            ubicacion: encryptedData.ubicacion
+              ? {
+                latitude: encryptedData.ubicacion.latitude,
+                longitude: encryptedData.ubicacion.longitude,
+              }
+              : undefined,
+          });
+        } else {
+          console.warn('No profile data found for the user.');
+        }
+      } catch (error) {
+        console.error('Failed to fetch and decrypt profile data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAndDecryptProfileData();
+  }, [userId]);
+
+
+  
+  if (loading) {
+    return <ActivityIndicator size="large" color="#4285F4" />;
+  }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <GooglePlacesAutocomplete
-        placeholder="Enter your address"
-        fetchDetails
-        onPress={(data, details = null) => {
-          // console.log('Selected Address Data:', data); // log all data
-          console.log('Selected Address Description:', data.description);
-          console.log('Place ID:', data.place_id);
+    <View style={styles.container}>
+      <Text style={styles.title}>Donor Profile</Text>
 
-          if (details) { // log only necessary details (exclude photos, reviews, etc.)
-            console.log('Formatted Address:', details.formatted_address);
-            console.log('Coordinates:', {
-              latitude: details.geometry.location.lat,
-              longitude: details.geometry.location.lng,
-            });
+      {profileData && (
+        <>
+          <Text style={styles.label}>Name:</Text>
+          <Text style={styles.value}>{profileData.nombre}</Text>
 
-            // Use the extracted latitude and longitude
-            const { lat, lng } = details?.geometry.location || {};
-            setAddress(data.description);
-            if (lat !== undefined && lng !== undefined) {
-              setLocation({ latitude: lat, longitude: lng });
-              console.log('Location set:', { latitude: lat, longitude: lng });
-            } else {
-              Alert.alert('Error', 'Failed to get location details.');
-            }
-          }
-        }}
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{profileData.email}</Text>
 
-        query={{ //looks for addresses using the Google Maps Places API
-          key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
-          language: 'en',
-        }}
-        onFail={(error) => {
-          console.error('API Request Failed:', error);
-        }}
-        onNotFound={() => {
-          console.warn('No suggestions found');
-        }}
-        textInputProps={{
-          onChangeText: (text) => {
-            console.log('Input changed:', text);
-          },
-        }}
-        styles={{
-          textInput: styles.input,
-          listView: {
-            zIndex: 1,
-          },
-        }}
-        debounce={300} //debounce means that it will wait 300ms after the last character has been typed before making the request
-        enablePoweredByContainer={false} // Remove "Powered by Google" footer if needed
-        renderRow={(data, index) => {
-          // Render only first 3 suggestions
-          if (index < 5) {
-            return (
-              <View key={index} style={styles.suggestionRow}>
-                <Text>{data.description}</Text>
-              </View>
-            );
-          } else {
-            return <View />;
-          }
-        }}
-      />
-      <TouchableOpacity style={styles.button} onPress={saveLocation} disabled={loading}>
-        <Text style={styles.buttonText}>{loading ? 'Updating...' : 'Save Location'}</Text>
+          <Text style={styles.label}>Phone:</Text>
+          <Text style={styles.value}>{profileData.phone}</Text>
+
+          <Text style={styles.label}>Account Type:</Text>
+          <Text style={styles.value}>{profileData.accountType}</Text>
+
+          {profileData.ubicacion && (
+            <>
+              <Text style={styles.label}>Location:</Text>
+              <Text style={styles.value}>
+                [{profileData.ubicacion.latitude}° N, {profileData.ubicacion.longitude}° W]
+              </Text>
+            </>
+          )}
+        </>
+      )}
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('UpdateLocation', { userId })}
+      >
+        <Text style={styles.buttonText}>Update Location</Text>
       </TouchableOpacity>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
   },
-  input: {
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 1,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    textAlign: 'center',
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  value: {
+    fontSize: 16,
+    color: '#333',
   },
   button: {
-    backgroundColor: '#4285F4',
-    padding: 15,
+    backgroundColor: '#FF8400',
+    padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 20,
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
-  },
-  suggestionRow: {
-    padding: 10,
-    borderBottomColor: '#ddd',
-    borderBottomWidth: 1,
   },
 });
 

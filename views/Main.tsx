@@ -31,10 +31,10 @@ export default function Main() {
           <Button title="Add Necesidad" onPress={() => navigation.navigate('AddNecesidad')} />
         </View>
         <View style={styles.button}>
-          <Button title="Sign Out" onPress={handleSignOut} />
+          <Button title="Donor Profile" onPress={() => navigation.navigate('DonorProfile')} />
         </View>
         <View style={styles.button}>
-          <Button title="Donor Profile" onPress={() => navigation.navigate('DonorProfile')} />
+          <Button title="Sign Out" onPress={handleSignOut} />
         </View>
       </View>
     </View>
@@ -61,5 +61,6 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 20, // Adds some margin to the bottom
     justifyContent: 'flex-end',
+    backgroundColor: '#FF8400',
   },
 });

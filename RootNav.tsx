@@ -5,10 +5,11 @@ import Main from './views/Main';
 import Entry from './views/Entry';
 import Login from './views/Login';
 import SignInView from './views/SignIn';
-import Maps from './views/Map'; // Add your Map view
+import Maps from './views/Map'; 
 import DisplayNecesidades from './views/DisplayNecesidades';
 import AddNecesidad from './views/AddNecesidad';
 import DonorProfile from './views/DonorProfile';
+import UpdateLocation from './views/UpdateLocation';
 
 const Stack = createStackNavigator();
 
@@ -31,7 +32,13 @@ function RootNavigator() {
           >
             {props => <DonorProfile {...props} userId={user.uid} />}
           </Stack.Screen>
+          <Stack.Screen 
+            name="UpdateLocation" 
+            component={UpdateLocation as any} 
+            options={{ title: 'Update Location' }} 
+          />
         </Stack.Group>
+        
       ) : (
         // Group for unauthenticated user screens
         <Stack.Group>

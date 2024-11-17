@@ -21,7 +21,7 @@ const Maps: React.FC = () => {
     { id: '2', latitude: 20.7315, longitude: -103.3700, title: 'Donante 2', category: 'Ropa', status: 'no disponible' },
     { id: '3', latitude: 20.7280, longitude: -103.3680, title: 'Donante 3', category: 'Alimentos', status: 'disponible' },
     { id: '4', latitude: 20.7270, longitude: -103.3660, title: 'Donante 4', category: 'Medicamentos', status: 'no disponible' },
-    { id: '5', latitude: 20.7454, longitude: -103.4405, title: 'Donante 5', category: 'baddies', status: 'disponible' },
+    // { id: '5', latitude: 20.7454, longitude: -103.4405, title: 'Donante 5', category: 'baddies', status: 'disponible' },
   ];
 
   // Filtra las ubicaciones según la etiqueta seleccionada
