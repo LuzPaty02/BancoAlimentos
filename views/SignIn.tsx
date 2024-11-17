@@ -4,7 +4,7 @@ import { View, TextInput, Text, StyleSheet, Dimensions, Pressable } from 'react-
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext, db } from './Authentication';
-import { doc, GeoPoint, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { encryptData } from '../encrypt'; // Import encryption utility
 
 const screenHeight = Dimensions.get('window').height;
@@ -32,45 +32,61 @@ const SignInView: React.FC = () => {
       if (!email || !nombre || !phone) {
         throw new Error('All fields are required before encryption.');
       }
-
+  
+      // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
-
+  
       console.log('Pre-encryption Data:', { email, nombre, phone });
-
+  
+      // Encrypt user data
       const encryptedEmail = await encryptData(email);
       const encryptedNombre = await encryptData(nombre);
       const encryptedPhone = await encryptData(phone);
-
+      const encryptedLocation = await encryptData("0,0");
+  
       console.log('Post-encryption Data:', {
         encryptedEmail,
         encryptedNombre,
         encryptedPhone,
       });
-
+  
       const accountType = isBAMX ? 'food bank staff' : isCompany ? 'donor company' : 'regular donor';
-
+  
       const userEncryptedData = {
         email: encryptedEmail,
         nombre: encryptedNombre,
         phone: encryptedPhone,
         accountType,
-        ...(accountType === 'donor company' && { ubicacion: new GeoPoint(0, 0) }), // Default GeoPoint for company
-        ...(accountType === 'food bank staff' && { uid: userId }), // UID for BAMX staff
+        ...(accountType === 'donor company' && { ubicacion: encryptedLocation }),
+        ...(accountType === 'food bank staff' && { uid: userId }),
       };
-
+  
+      // Save encrypted user data in Firestore
       await setDoc(doc(db, 'users', userId), userEncryptedData);
-
+  
       console.log('User signed up successfully with encrypted data and default location.');
     } catch (error: any) {
-      console.error('Sign-up error:', error )
+      console.error('Sign-up error:', error);
+      
       if (error.message.includes('auth/email-already-in-use')) {
         alert('Email is already in use.');
       } else {
         alert('Error during sign-up: ' + error.message);
       }
+  
+      // Clean up Firebase Authentication if user creation partially succeeded
+      if (auth.currentUser) {
+        try {
+          await auth.currentUser.delete();
+          console.log('Incomplete user creation cleaned up.');
+        } catch (cleanupError) {
+          console.error('Error cleaning up incomplete user:', cleanupError);
+        }
+      }
     }
   };
+  
 
   return (
     <View style={styles.container}>
