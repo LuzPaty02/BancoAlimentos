@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'rea
 import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext, db } from './Authentication';
 import { useNavigation } from '@react-navigation/native';
-import { decryptData } from '../encrypt'; // Import decrypt function
+import { decryptData } from '../encrypt'; 
 
 interface ProfileData {
   nombre: string;
@@ -34,7 +34,7 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
         if (userDoc.exists()) {
           const encryptedData = userDoc.data();
           console.log('Fetched Encrypted:', encryptedData.email);
-          console.log('Decrypted Logs — Emails decrypted:', decryptData(encryptedData.email));
+          // console.log('Decrypted Logs — Emails decrypted:', decryptData(encryptedData.email));
 
 
           // Decrypt data

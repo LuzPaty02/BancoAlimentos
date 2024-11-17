@@ -12,7 +12,7 @@ async function getSecureRandomBytes(byteCount) {
 export async function getEncryptionKey() {
     let key = await SecureStore.getItemAsync(AES_KEY_STORAGE_KEY);
     if (!key) {
-        key = await getSecureRandomBytes(32); // 256-bit key
+        key = await getSecureRandomBytes(16); // 16 bytes = 128-bit key
         await SecureStore.setItemAsync(AES_KEY_STORAGE_KEY, key);
     }
     return key;

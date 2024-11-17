@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { View, StyleSheet, Text, Alert, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { updateDoc, doc} from 'firebase/firestore'; // Removed GeoPoint as it's not used.
+import { updateDoc, doc} from 'firebase/firestore'; 
 import { AuthContext, db } from './Authentication';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import 'react-native-get-random-values'; // Ensure this is loaded before encryption or UUID usage.
-import { encryptData } from '../encrypt'; // Assuming this handles encryption.
+import 'react-native-get-random-values'; 
+import { encryptData } from '../encrypt'; 
 
 const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
     const authContext = useContext(AuthContext);
@@ -91,7 +91,7 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
                     setLocation({ latitude: lat, longitude: lng });
                 }}
                 query={{
-                    key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY, // Ensure environment variable is loaded correctly.
+                    key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY, 
                     language: 'en',
                 }}
                 styles={{
@@ -101,7 +101,7 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
                 debounce={300}
                 enablePoweredByContainer={false}
                 renderRow={(data, index) => {
-                    // Render only first 3 suggestions
+                    // Render only first 5 suggestions
                     if (index < 5) {
                       return (
                         <View key={index} style={styles.suggestionRow}>
