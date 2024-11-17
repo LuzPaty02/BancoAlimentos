@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from './views/Authentication';
-import {doc} from 'firebase/firestore';
 import Main from './views/Main';
 import Entry from './views/Entry';
 import Login from './views/Login';

@@ -3,7 +3,6 @@ import { View, StyleSheet, Text, Alert, TouchableOpacity, KeyboardAvoidingView, 
 import { updateDoc, GeoPoint, doc } from 'firebase/firestore';
 import { AuthContext, db } from './Authentication';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import 'react-native-get-random-values';
 
 
 const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
