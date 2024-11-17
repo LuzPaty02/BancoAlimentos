@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
-import Maps from './Map';
 
 interface Necesidad {
   id: string;
@@ -15,6 +14,16 @@ interface Necesidad {
   Caducidad?: any; 
   Fecha_de_creacion?: any; 
 }
+
+const screenHeight = Dimensions.get('window').height;
+const RPH = (percentage: any) => {
+    return (percentage / 100) * screenHeight;
+};
+
+const screenWidth = Dimensions.get('window').width;
+const RPW = (percentage: any) => {
+    return (percentage / 100) * screenWidth;
+};
 
 const DisplayNecesidades = () => {
   const [necesidades, setNecesidades] = useState<Necesidad[]>([]);
@@ -49,7 +58,7 @@ const DisplayNecesidades = () => {
   }, [db]);
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={{ padding: 20 }}>
         {loading ? (
           <Text>Loading...</Text>
@@ -69,5 +78,61 @@ const DisplayNecesidades = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+      justifyContent: 'center',
+      textAlign: 'left',
+      fontFamily: 'Roboto',
+  },
+  box: {
+      textAlign: 'left',
+      borderColor: '#D9D9D9',
+      borderWidth: 2,
+      borderRadius: 8,
+      padding: 24,
+      gap: 24,
+  },
+  inputField: {
+      padding: 10,
+      borderWidth: 0.5,
+      borderRadius: 5,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      width: RPW(60),
+      borderColor: 'grey',
+      lineHeight: 16,
+  },
+  button: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: RPW(60),
+      backgroundColor: '#FF8400',
+      borderRadius: 8,
+      gap: 16,
+      paddingVertical: 10,
+  },
+  group: {
+      gap: 8,
+      alignContent: 'center',
+  },
+  textButton:
+  {
+      color: 'white',
+  },
+
+  switchText: {
+      width: RPW(40),
+      textAlign: 'left',
+      fontSize: 16,
+  },
+
+  linkStyle: {
+      textAlign: 'left',
+      textDecorationLine: 'underline',
+      textDecorationStyle: 'solid',
+  },
+
+});
 
 export default DisplayNecesidades;
