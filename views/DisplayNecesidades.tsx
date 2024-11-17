@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, ScrollView, StyleSheet, Dimensions, Pressable } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
 
@@ -11,18 +11,22 @@ interface Necesidad {
     TipoEncoded: number;
   };
   Prioridad: number;
-  Caducidad?: any; 
-  Fecha_de_creacion?: any; 
+  Caducidad?: any;
+  Fecha_de_creacion?: any;
 }
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => {
-    return (percentage / 100) * screenHeight;
+  return (percentage / 100) * screenHeight;
 };
 
 const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: any) => {
-    return (percentage / 100) * screenWidth;
+  return (percentage / 100) * screenWidth;
+};
+
+const placeholder = {
+  uri: 'https://i.scdn.co/image/ab67616d0000b273f536bbb3a72d3cc03f67d774',
 };
 
 const DisplayNecesidades = () => {
@@ -59,80 +63,76 @@ const DisplayNecesidades = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={{ padding: 20 }}>
+      <View style={{ padding: 12 }}>
         {loading ? (
           <Text>Loading...</Text>
         ) : necesidades.length > 0 ? (
           necesidades.map((necesidad) => (
-            <View key={necesidad.id} style={{ marginBottom: 10 }}>
-              <Text>Necesidad: {necesidad.Necesidad}</Text>
-              <Text>Tipo: {necesidad.Categoria?.Tipo}</Text>
-              <Text>Prioridad: {necesidad.Prioridad}</Text>
+            <View key={necesidad.id} style={styles.list}>
+              <View style={styles.listItem}>
+                <Image source={placeholder} style={styles.imgstyle}></Image>
+                <View style={styles.group}>
+                  <Text style={styles.necesidadTitle}>{necesidad.Necesidad}</Text>
+                  <Text>Tipo: {necesidad.Categoria?.Tipo}</Text>
+                  <Text>Prioridad: {necesidad.Prioridad}</Text>
+                </View>
+              </View>
             </View>
           ))
         ) : (
           <Text>No necesidades found.</Text>
         )}
       </View>
-      
+
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-      justifyContent: 'center',
-      textAlign: 'left',
-      fontFamily: 'Roboto',
+    justifyContent: 'center',
+    textAlign: 'left',
   },
-  box: {
-      textAlign: 'left',
-      borderColor: '#D9D9D9',
-      borderWidth: 2,
-      borderRadius: 8,
-      padding: 24,
-      gap: 24,
+  imgstyle:{
+    borderRadius: 20,
+    resizeMode: 'contain',
+    width: RPW(22),
+    height: RPH(10),
   },
-  inputField: {
-      padding: 10,
-      borderWidth: 0.5,
-      borderRadius: 5,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      width: RPW(60),
-      borderColor: 'grey',
-      lineHeight: 16,
+  list: {
+    textAlign: 'left',
+    flexDirection: 'row',
+    borderColor: '#D9D9D9',
+    borderBottomWidth: 1,
+    paddingBottom: 16,
+    gap: 16,
+  },
+  necesidadTitle: {
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+    fontSize: 24,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    width: RPW(70),
+    gap: 12,
   },
   button: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: RPW(60),
-      backgroundColor: '#FF8400',
-      borderRadius: 8,
-      gap: 16,
-      paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: RPW(60),
+    backgroundColor: '#FF8400',
+    borderRadius: 8,
+    gap: 16,
+    paddingVertical: 10,
   },
   group: {
-      gap: 8,
-      alignContent: 'center',
+    gap: 8,
+    alignContent: 'center',
   },
-  textButton:
-  {
-      color: 'white',
-  },
-
-  switchText: {
-      width: RPW(40),
-      textAlign: 'left',
-      fontSize: 16,
-  },
-
-  linkStyle: {
-      textAlign: 'left',
-      textDecorationLine: 'underline',
-      textDecorationStyle: 'solid',
-  },
-
 });
 
 export default DisplayNecesidades;
