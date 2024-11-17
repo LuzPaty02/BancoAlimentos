@@ -2,10 +2,10 @@ import React, { createContext, useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, Auth, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { browserLocalPersistence, setPersistence, initializeAuth } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, Firestore } from 'firebase/firestore';
+import { Platform } from 'react-native';
 
-//Importing the environment variables
+// Importing the environment variables
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
@@ -25,15 +25,19 @@ setPersistence(auth, browserLocalPersistence).catch((error) => {
 
 export const db: Firestore = getFirestore(app);
 
+// Placeholder for platform-specific recaptcha setup
+export const setupRecaptcha = () => {
+  if (Platform.OS === 'web') {
+    // Logic for web platforms
+    console.warn("ReCAPTCHA setup for web is not implemented in this file.");
+  } else {
+    console.warn("ReCAPTCHA setup for native platforms will require custom integration.");
+  }
+};
 
-//createContext() is a react hook that allows components in a tree to easily access shared data 
-//centralized access to Firebase services and the authenticated user's state
-// allowing child components to easily access these resources throughout the application 
-//without the need to pass props manually.
+// AuthContext for centralized state
 export const AuthContext = createContext<{ auth: any; db: any; user: FirebaseUser | null } | null>(null);
 
-
-//Componente para autenticación
 export default function Authentication({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<FirebaseUser | null>(null);
 
@@ -51,7 +55,6 @@ export default function Authentication({ children }: { children: React.ReactNode
     return () => unsubscribe();
   }, []);
 
-  //los children son los componentes que se encuentran dentro de este componente (ver App.tsx)
   return (
     <AuthContext.Provider value={{ auth, db, user }}>
       {children}

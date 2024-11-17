@@ -22,6 +22,17 @@ const logo = {
     height: RPH(20),
 };
 
+const GoBackButton: React.FC = () => {
+    const navigation = useNavigation();
+    return (
+        <Pressable style={styles.button} onPress={() => {
+            navigation.goBack();
+        }}>
+            <Text style={styles.textButton}> Go Back </Text>
+        </Pressable>
+    );
+}
+
 const SignInView: React.FC = () => {
     const navigation = useNavigation();
     const authContext = useContext(AuthContext);
@@ -66,6 +77,7 @@ const SignInView: React.FC = () => {
 
     return (
         <View style={styles.container}>
+            <GoBackButton />
             <View style={styles.box}>
                 <View style={styles.group}>
                     <Text style={styles.switchText}>Name</Text>

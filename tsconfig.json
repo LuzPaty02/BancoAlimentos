@@ -1,9 +1,6 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true,
-    "paths": {
-      "@firebase/auth": ["./node_modules/@firebase/auth/dist/auth.esm.ts"]
-    },
+    "strict": true
   }
 }
