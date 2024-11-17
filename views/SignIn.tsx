@@ -43,7 +43,7 @@ const SignInView: React.FC = () => {
       const encryptedEmail = await encryptData(email);
       const encryptedNombre = await encryptData(nombre);
       const encryptedPhone = await encryptData(phone);
-      const encryptedLocation = await encryptData("0,0");
+      const encryptedLocation = await encryptData({ latitude: 0, longitude: 0 }); // Object input
   
       console.log('Post-encryption Data:', {
         encryptedEmail,
