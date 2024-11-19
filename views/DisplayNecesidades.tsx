@@ -26,7 +26,7 @@ const RPW = (percentage: any) => {
 };
 
 const placeholder = {
-  uri: 'https://i.scdn.co/image/ab67616d0000b273f536bbb3a72d3cc03f67d774',
+  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRFZ0wyvscCvM9CLboB7yLEgmTUQcviU48Kg&s',
 };
 
 const DisplayNecesidades = () => {
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
   },
   imgstyle:{
     borderRadius: 20,
-    resizeMode: 'contain',
-    width: RPW(22),
+    resizeMode: 'cover',
+    width: RPW(20),
     height: RPH(10),
   },
   list: {

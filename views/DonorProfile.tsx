@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, StyleSheet, Text, Alert, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { updateDoc, GeoPoint, doc } from 'firebase/firestore';
 import { AuthContext, db } from './Authentication';
+import 'react-native-get-random-values';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 
