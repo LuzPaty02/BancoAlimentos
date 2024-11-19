@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "FirebaseJS",
+    "plugins": ["@react-native-firebase/app", "@react-native-firebase/auth"],
     "slug": "FirebaseJS",
     "version": "1.0.0",
     "orientation": "portrait",

@@ -5,12 +5,16 @@ import Main from './views/Main';
 import Entry from './views/Entry';
 import Login from './views/Login';
 import SignInView from './views/SignIn';
+import OtpVerification from './views/OTPVerification'; // Import OtpVerification
 import Maps from './views/Map'; // Add your Map view
 import DisplayNecesidades from './views/DisplayNecesidades';
 import AddNecesidad from './views/AddNecesidad';
 import DonorProfile from './views/DonorProfile';
+import { RootStackParamList } from './RootParamList';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
+
+//const Stack = createStackNavigator();
 
 function RootNavigator() {
   const authContext = useContext(AuthContext);
@@ -37,6 +41,7 @@ function RootNavigator() {
         <Stack.Group>
           <Stack.Screen name="Entry" component={Entry} options={{ headerShown: false }} />
           <Stack.Screen name="SignIn" component={SignInView} options={{ headerShown: false }} />
+          <Stack.Screen name="OTPVerification" component={OtpVerification} options={{ title: 'Verify OTP' }} /> {/* Added here */}
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         </Stack.Group>
       )}
