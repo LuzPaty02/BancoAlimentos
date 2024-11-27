@@ -13,11 +13,12 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
         throw new Error("AuthContext is null");
     }
     const { user } = authContext;
-    console.log('User from AuthContext:', user);
+    // console.log('User from AuthContext:', user);
     
 
     const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [loading, setLoading] = useState(false);
+    const [userInput, setUserInput] = useState('');
 
     const saveLocation = async () => {
         if (!location || typeof location.latitude !== 'number' || typeof location.longitude !== 'number') {
@@ -100,20 +101,24 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
                 }}
                 debounce={300}
                 enablePoweredByContainer={false}
-                renderRow={(data, index) => {
-                    // Render only first 5 suggestions
-                    if (index < 5) {
-                      return (
-                        <View key={index} style={styles.suggestionRow}>
-                          <Text>{data.description}</Text>
-                        </View>
-                      );
-                    } else {
-                      return <View />;
-                    }
-                  }}
                 onFail={(error) => console.error('API Request Failed:', error)}
-                onNotFound={() => console.warn('No suggestions found')}
+            onNotFound={() => console.warn('No suggestions found')}
+            textInputProps={{
+                onChangeText: (text) => {
+                    setUserInput(text); // Update user input
+                    const array = new Uint32Array(1);
+                    crypto.getRandomValues(array);
+                    const randomNumber = array[0] / (0xFFFFFFFF + 1); // Normalize
+                    console.log(`User input: ${text}, Secure random number: ${randomNumber}`);
+                },
+            }}
+                renderRow={(data, index) => {
+                    return (
+                        <View key={index} style={styles.suggestionRow}>
+                            <Text>{data.description}</Text>
+                        </View>
+                    );
+                  }}
             />
             <TouchableOpacity style={styles.button} onPress={saveLocation} disabled={loading}>
                 <Text style={styles.buttonText}>{loading ? 'Updating...' : 'Save Location'}</Text>

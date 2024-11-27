@@ -18,7 +18,6 @@ export async function getEncryptionKey() {
     return key;
 }
 
-
 export async function encryptData(data) {
     if (typeof data !== 'string' && typeof data !== 'object') {
         throw new Error('Invalid data for encryption. Must be a string or an object.');
