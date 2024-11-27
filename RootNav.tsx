@@ -24,7 +24,7 @@ function RootNavigator() {
         <Stack.Group>
           <Stack.Screen name="MainMenu" component={Main} options={{ headerShown: false }} />
           <Stack.Screen name="Maps" component={Maps} options={{ title: 'Display Map' }} />
-          <Stack.Screen name="DisplayNecesidades" component={DisplayNecesidades} options={{ title: 'Display Necesidades' }} />
+          <Stack.Screen name="DisplayNecesidades" component={DisplayNecesidades} options={{ title: 'Necesidades Publicadas' }} />
           <Stack.Screen name="AddNecesidad" component={AddNecesidad} options={{ title: 'Add Necesidad' }} />
           <Stack.Screen
             name="DonorProfile"

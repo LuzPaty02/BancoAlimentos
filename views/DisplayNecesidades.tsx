@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Image, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { collection, getDocs } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
-import Maps from './Map';
 
 interface Necesidad {
   id: string;
@@ -12,9 +11,23 @@ interface Necesidad {
     TipoEncoded: number;
   };
   Prioridad: number;
-  Caducidad?: any; 
-  Fecha_de_creacion?: any; 
+  Caducidad?: any;
+  Fecha_de_creacion?: any;
 }
+
+const screenHeight = Dimensions.get('window').height;
+const RPH = (percentage: any) => {
+  return (percentage / 100) * screenHeight;
+};
+
+const screenWidth = Dimensions.get('window').width;
+const RPW = (percentage: any) => {
+  return (percentage / 100) * screenWidth;
+};
+
+const placeholder = {
+  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRFZ0wyvscCvM9CLboB7yLEgmTUQcviU48Kg&s',
+};
 
 const DisplayNecesidades = () => {
   const [necesidades, setNecesidades] = useState<Necesidad[]>([]);
@@ -49,25 +62,77 @@ const DisplayNecesidades = () => {
   }, [db]);
 
   return (
-    <ScrollView>
-      <View style={{ padding: 20 }}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={{ padding: 12 }}>
         {loading ? (
           <Text>Loading...</Text>
         ) : necesidades.length > 0 ? (
           necesidades.map((necesidad) => (
-            <View key={necesidad.id} style={{ marginBottom: 10 }}>
-              <Text>Necesidad: {necesidad.Necesidad}</Text>
-              <Text>Tipo: {necesidad.Categoria?.Tipo}</Text>
-              <Text>Prioridad: {necesidad.Prioridad}</Text>
+            <View key={necesidad.id} style={styles.list}>
+              <View style={styles.listItem}>
+                <Image source={placeholder} style={styles.imgstyle}></Image>
+                <View style={styles.group}>
+                  <Text style={styles.necesidadTitle}>{necesidad.Necesidad}</Text>
+                  <Text>Tipo: {necesidad.Categoria?.Tipo}</Text>
+                  <Text>Prioridad: {necesidad.Prioridad}</Text>
+                </View>
+              </View>
             </View>
           ))
         ) : (
           <Text>No necesidades found.</Text>
         )}
       </View>
-      
+
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    textAlign: 'left',
+  },
+  imgstyle:{
+    borderRadius: 20,
+    resizeMode: 'cover',
+    width: RPW(20),
+    height: RPH(10),
+  },
+  list: {
+    textAlign: 'left',
+    flexDirection: 'row',
+    borderColor: '#D9D9D9',
+    borderBottomWidth: 1,
+    paddingBottom: 16,
+    gap: 16,
+  },
+  necesidadTitle: {
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
+    fontSize: 24,
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    width: RPW(70),
+    gap: 12,
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: RPW(60),
+    backgroundColor: '#FF8400',
+    borderRadius: 8,
+    gap: 16,
+    paddingVertical: 10,
+  },
+  group: {
+    gap: 8,
+    alignContent: 'center',
+  },
+});
 
 export default DisplayNecesidades;
