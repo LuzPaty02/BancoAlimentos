@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { View, StyleSheet, Text, Alert, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { updateDoc, doc} from 'firebase/firestore'; 
+import { updateDoc, doc } from 'firebase/firestore';
 import { AuthContext, db } from './Authentication';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import 'react-native-get-random-values'; 
-import { encryptData} from '../encrypt'; 
+import 'react-native-get-random-values';
+import { encryptData } from '../encrypt';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
@@ -16,7 +16,7 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
     }
     const { user } = authContext;
     // console.log('User from AuthContext:', user);
-    
+
 
     const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [loading, setLoading] = useState(false);
@@ -28,32 +28,32 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
             console.error('Invalid location:', location);
             return;
         }
-    
+
         try {
             setLoading(true);
-    
+
             console.log('User ID:', userId);
             if (!userId) {
                 throw new Error('User ID is undefined or null.');
             }
-    
+
             const userDoc = doc(db, 'users', userId);
             console.log('Document reference created:', userDoc);
-    
+
             const dataToEncrypt = {
                 latitude: location.latitude.toString(),
                 longitude: location.longitude.toString(),
             };
-    
+
             console.log('Data before encryption:', dataToEncrypt);
-    
+
             const encryptedLocation = await encryptData(dataToEncrypt);
             console.log('Encrypted location:', encryptedLocation);
-    
+
             if (!encryptedLocation || typeof encryptedLocation !== 'string') {
                 throw new Error('Invalid encrypted location returned.');
             }
-    
+
             console.log('Attempting to update Firestore...');
             await updateDoc(userDoc, {
                 encryptedUbicacion: encryptedLocation,
@@ -70,10 +70,10 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
             setLoading(false);
         }
     };
-    
-    
-    
-    
+
+
+
+
 
     return (
         <KeyboardAvoidingView
@@ -93,7 +93,7 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
                     setLocation({ latitude: lat, longitude: lng });
                 }}
                 query={{
-                    key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY, 
+                    key: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
                     language: 'en',
                 }}
                 styles={{
@@ -103,23 +103,23 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
                 debounce={300}
                 enablePoweredByContainer={false}
                 onFail={(error) => console.error('API Request Failed:', error)}
-            onNotFound={() => console.warn('No suggestions found')}
-            textInputProps={{
-                onChangeText: (text) => {
-                    setUserInput(text); // Update user input
-                    const array = new Uint32Array(1);
-                    crypto.getRandomValues(array);
-                    const randomNumber = array[0] / (0xFFFFFFFF + 1); // Normalize
-                    console.log(`User input: ${text}, Secure random number: ${randomNumber}`);
+                onNotFound={() => console.warn('No suggestions found')}
+                textInputProps={{
+                    onChangeText: (text) => {
+                        setUserInput(text); // Update user input
+                        const array = new Uint32Array(1);
+                        crypto.getRandomValues(array);
+                        const randomNumber = array[0] / (0xFFFFFFFF + 1); // Normalize
+                        console.log("User input: ${text}, Secure random number: ${randomNumber}");
                 },
             }}
-                renderRow={(data, index) => {
-                    return (
-                        <View key={index} style={styles.suggestionRow}>
-                            <Text>{data.description}</Text>
-                        </View>
-                    );
-                  }}
+            renderRow={(data, index) => {
+                return (
+                    <View key={index} style={styles.suggestionRow}>
+                        <Text>{data.description}</Text>
+                    </View>
+                );
+            }}
             />
             <TouchableOpacity style={styles.button} onPress={saveLocation} disabled={loading}>
                 <Text style={styles.buttonText}>{loading ? 'Updating...' : 'Save Location'}</Text>

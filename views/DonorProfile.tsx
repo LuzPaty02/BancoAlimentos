@@ -29,26 +29,25 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
   useEffect(() => {
     const fetchAndDecryptProfileData = async () => {
       try {
-        setLoading(true);
-        const userDoc = await getDoc(doc(db, 'users', userId));
-        if (userDoc.exists()) {
-          const encryptedData = userDoc.data();
-          console.log('Fetched Encrypted:', encryptedData.email);
-          // console.log('Decrypted Logs — Emails decrypted:', decryptData(encryptedData.email));
+        const docRef = doc(db, 'users', userId);
+        const docSnap = await getDoc(docRef);
 
-          // Decrypt data
+        if (docSnap.exists()) {
+          const encryptedData = docSnap.data();
+          console.log('Fetched Encrypted:', encryptedData);
+
           const decryptedEmail = await decryptData(encryptedData.email);
           const decryptedNombre = await decryptData(encryptedData.nombre);
           const decryptedPhone = await decryptData(encryptedData.phone);
-         
-         // Decrypt location
-        let decryptedUbicacion;
-        if (encryptedData.encryptedUbicacion) {
-          decryptedUbicacion = await decryptData(encryptedData.encryptedUbicacion);
-          if (typeof decryptedUbicacion === 'string') {
-            decryptedUbicacion = JSON.parse(decryptedUbicacion);
+
+          let decryptedUbicacion;
+          if (encryptedData.encryptedUbicacion) {
+            decryptedUbicacion = await decryptData(encryptedData.encryptedUbicacion);
+            if (typeof decryptedUbicacion === 'string') {
+              decryptedUbicacion = JSON.parse(decryptedUbicacion);
+            }
           }
-        }
+
           console.log('Decrypted Data:', { decryptedEmail, decryptedNombre, decryptedPhone, decryptedUbicacion });
 
           setProfileData({
@@ -56,10 +55,10 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
             email: decryptedEmail,
             phone: decryptedPhone,
             accountType: encryptedData.accountType,
-            ubicacion: decryptedUbicacion || undefined,
+            ubicacion: decryptedUbicacion,
           });
         } else {
-          console.warn('No profile data found for the user.');
+          console.log('No such document!');
         }
       } catch (error) {
         console.error('Failed to fetch and decrypt profile data:', error);
@@ -71,47 +70,25 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
     fetchAndDecryptProfileData();
   }, [userId]);
 
-
-  
   if (loading) {
-    return <ActivityIndicator size="large" color="#4285F4" />;
+    return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Donor Profile</Text>
-
-      {profileData && (
+      {profileData ? (
         <>
-          <Text style={styles.label}>Name:</Text>
-          <Text style={styles.value}>{profileData.nombre}</Text>
-
-          <Text style={styles.label}>Email:</Text>
-          <Text style={styles.value}>{profileData.email}</Text>
-
-          <Text style={styles.label}>Phone:</Text>
-          <Text style={styles.value}>{profileData.phone}</Text>
-
-          <Text style={styles.label}>Account Type:</Text>
-          <Text style={styles.value}>{profileData.accountType}</Text>
-
+          <Text>Nombre: {profileData.nombre}</Text>
+          <Text>Email: {profileData.email}</Text>
+          <Text>Phone: {profileData.phone}</Text>
+          <Text>Account Type: {profileData.accountType}</Text>
           {profileData.ubicacion && (
-            <>
-              <Text style={styles.label}>Location:</Text>
-              <Text style={styles.value}>
-                [{profileData.ubicacion.latitude}° N, {profileData.ubicacion.longitude}° W]
-              </Text>
-            </>
+            <Text>Ubicacion: {profileData.ubicacion.latitude}, {profileData.ubicacion.longitude}</Text>
           )}
         </>
+      ) : (
+        <Text>No profile data available</Text>
       )}
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('UpdateLocation', { userId })}
-      >
-        <Text style={styles.buttonText}>Update Location</Text>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -119,35 +96,7 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
-  value: {
-    fontSize: 16,
-    color: '#333',
-  },
-  button: {
-    backgroundColor: '#FF8400',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    padding: 16,
   },
 });
 

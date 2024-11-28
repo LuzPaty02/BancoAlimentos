@@ -36,10 +36,13 @@ export async function encryptData(data) {
         padding: pad.Pkcs7,
     });
 
-    return JSON.stringify({
+    const encryptedData = JSON.stringify({
         initializationVector: initializationVectorHex,
         data: encrypted.toString(),
     });
+
+    console.log('Encrypted Data:', encryptedData);
+    return encryptedData;
 }
 
 export async function decryptData(encryptedData) {
@@ -57,7 +60,6 @@ export async function decryptData(encryptedData) {
         }
 
         const initializationVector = enc.Hex.parse(encryptedDataJson.initializationVector);
-
         const decrypted = AES.decrypt(encryptedDataJson.data, keyWordArray, {
             iv: initializationVector,
             mode: mode.CBC,
@@ -65,13 +67,13 @@ export async function decryptData(encryptedData) {
         });
 
         const decryptedString = decrypted.toString(enc.Utf8);
-        // console.log('Decrypted String:', decryptedString);
+        console.log('Decrypted String:', decryptedString);
 
         // Try to parse as JSON, fallback to plain string if JSON parsing fails
         try {
             return JSON.parse(decryptedString);
         } catch (jsonError) {
-            // console.warn('Decrypted data is not JSON, returning plain string:', decryptedString);
+            console.warn('Decrypted data is not JSON, returning plain string:', decryptedString);
             return decryptedString;
         }
     } catch (error) {
