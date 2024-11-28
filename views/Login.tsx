@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { signInWithEmailAndPassword} from 'firebase/auth';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { auth, db } from './Authentication';
 import { doc, getDoc } from 'firebase/firestore';
 
@@ -25,7 +25,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigation();
+    const navigation = useNavigation<NavigationProp<any>>(); 
   
     const handleLogin = async (e:any) => {
       e.preventDefault();
@@ -41,14 +41,16 @@ const Login = () => {
         // Navigate based on account type
         switch (userType) {
           case 'regular donor':
-            navigate.navigate('/regular-donor-dashboard');
+            navigation.navigate('MainMenu');
+            console.log('Regular donor account type');
             break;
           case 'donor company':
-            navigate.navigate('/company-dashboard');
+            navigation.navigate('Company');
+            console.log('Donor company account type');
             break;
           case 'food bank staff':
-            console.log('Food bank staff');
-            navigate.navigate('Maps');
+            navigation.navigate('Maps');
+            console.log('Food Bank account type');
             break;
           default:
             setError('Unknown account type');

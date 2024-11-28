@@ -106,7 +106,7 @@ const AddNecesidad = () => {
           />
         </View>
         <Pressable style={styles.button} onPress={addNecesidad}>
-          <Text style={styles.textButton}> Add Necesidad </Text>
+          <Text style={styles.textButton}> Agregar Necesidad </Text>
         </Pressable>
       </View>
     </View>
