@@ -36,24 +36,27 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
           console.log('Fetched Encrypted:', encryptedData.email);
           // console.log('Decrypted Logs — Emails decrypted:', decryptData(encryptedData.email));
 
-
           // Decrypt data
           const decryptedEmail = await decryptData(encryptedData.email);
           const decryptedNombre = await decryptData(encryptedData.nombre);
           const decryptedPhone = await decryptData(encryptedData.phone);
-          console.log('Decrypted Data:', { decryptedEmail, decryptedNombre, decryptedPhone });
+         
+         // Decrypt location
+        let decryptedUbicacion;
+        if (encryptedData.encryptedUbicacion) {
+          decryptedUbicacion = await decryptData(encryptedData.encryptedUbicacion);
+          if (typeof decryptedUbicacion === 'string') {
+            decryptedUbicacion = JSON.parse(decryptedUbicacion);
+          }
+        }
+          console.log('Decrypted Data:', { decryptedEmail, decryptedNombre, decryptedPhone, decryptedUbicacion });
 
           setProfileData({
             nombre: decryptedNombre,
             email: decryptedEmail,
             phone: decryptedPhone,
             accountType: encryptedData.accountType,
-            ubicacion: encryptedData.ubicacion
-              ? {
-                latitude: encryptedData.ubicacion.latitude,
-                longitude: encryptedData.ubicacion.longitude,
-              }
-              : undefined,
+            ubicacion: decryptedUbicacion || undefined,
           });
         } else {
           console.warn('No profile data found for the user.');

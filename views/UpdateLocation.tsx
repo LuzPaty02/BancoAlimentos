@@ -4,9 +4,11 @@ import { updateDoc, doc} from 'firebase/firestore';
 import { AuthContext, db } from './Authentication';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values'; 
-import { encryptData } from '../encrypt'; 
+import { encryptData} from '../encrypt'; 
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
+    const navigation = useNavigation();
     const authContext = useContext(AuthContext);
     // console.log('AuthContext:', authContext);
     if (!authContext) {
@@ -56,9 +58,8 @@ const UpdateLocation: React.FC<{ userId: string }> = ({ userId }) => {
             await updateDoc(userDoc, {
                 encryptedUbicacion: encryptedLocation,
             });
-            console.log('Firestore updated successfully.');
-    
-            Alert.alert('Success', 'Location updated successfully!');
+            navigation.navigate('DonorProfile');
+
         } catch (error) {
             console.error('Failed to update location:', {
                 message: error.message,
