@@ -79,7 +79,7 @@ export default function MainBamx() {
           ]} 
           onPress={() => navigation.navigate('DisplayNecesidades')}
         >
-          <Text style={styles.buttonText}>Necesidades</Text>
+          <Text style={styles.buttonText}>Necesidades Publicadas</Text>
         </Pressable>
         
         <Pressable 

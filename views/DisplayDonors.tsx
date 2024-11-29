@@ -45,9 +45,10 @@ const DisplayDonors = () => {
       const decryptedDonors = await Promise.all(
         donorsEncryptedData.map(async (donor) => {
           const decryptedDonor: Partial<Donor> = { id: donor.id };
-
+          
           try {
             decryptedDonor.nombre = await decryptData(donor.nombre);
+            console.log('Decrypted Donor:', decryptedDonor.id);
           } catch (error) {
             console.warn(`Failed to decrypt 'nombre' for donor ID ${donor.id}:`, error);
           }

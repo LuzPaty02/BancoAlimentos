@@ -71,8 +71,8 @@ function RootNavigator() {
         <Stack.Group>
           <Stack.Screen name="MainBamx" component={MainBamx} options={{ title: 'BAMX Dashboard' }} />
           <Stack.Screen name="DisplayNecesidades" component={DisplayNecesidades} options={{ title: 'Necesidades Publicadas' }} />
-          <Stack.Screen name="Maps" component={Maps} options={{ title: 'Display Map' }} />
-          <Stack.Screen name="DisplayDonors" component={DisplayDonors} options={{ title: 'Agregar Necesidad' }} />
+          <Stack.Screen name="Maps" component={Maps} options={{ title: 'Mapa de Donantes' }} />
+          <Stack.Screen name="DisplayDonors" component={DisplayDonors} options={{ title: 'Mostrar Donantes Activos ' }} />
           <Stack.Screen name="AddNecesidad" component={AddNecesidad} options={{ title: 'Organizaciones donantes activas' }} />
         </Stack.Group>
       )}
