@@ -26,12 +26,12 @@ const Entry: React.FC = () => {
       <Pressable style={styles.button} onPress={() => {
         navigation.navigate('Login');
       }}>
-        <Text style={styles.textButton}> Login </Text>
+        <Text style={styles.textButton}> Iniciar Sesión </Text>
       </Pressable>
       <Pressable style={styles.button2} onPress={() => {
         navigation.navigate('SignIn');
       }}>
-        <Text style={styles.textButton2}> Sign Up </Text>
+        <Text style={styles.textButton2}> Crear cuenta </Text>
       </Pressable>
     </View >
   );

@@ -76,10 +76,10 @@ const Login = () => {
                     />
                 </View>
                 <View style={styles.group}>
-                    <Text style={styles.switchText}>Password</Text>
+                    <Text style={styles.switchText}>Contraseña</Text>
                     <TextInput
                         style={styles.inputField}
-                        placeholder="Password"
+                        placeholder="contraseña"
                         secureTextEntry={true}
                         value={password}
                         onChangeText={setPassword}
@@ -87,13 +87,13 @@ const Login = () => {
                 </View>
                 <View>
                     <Pressable style={styles.button} onPress={handleLogin}>
-                        <Text style={styles.textButton}> Login </Text>
+                        <Text style={styles.textButton}> Iniciar Sesión </Text>
                     </Pressable>
                 </View>
 
                 <View>
                     <Pressable>
-                        <Text style={styles.linkStyle}>{"Forgot password?"}</Text>
+                        <Text style={styles.linkStyle}>{"Olvidó su contraseña?"}</Text>
                     </Pressable>
                 </View>
             </View>

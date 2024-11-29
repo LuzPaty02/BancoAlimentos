@@ -105,26 +105,26 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }: { userId: string
 
       {profileData && (
         <>
-          <Text style={styles.label}>Name:</Text>
+          <Text style={styles.label}>Nombre:</Text>
           <Text style={styles.value}>{profileData.nombre}</Text>
 
           <Text style={styles.label}>Email:</Text>
           <Text style={styles.value}>{profileData.email}</Text>
 
-          <Text style={styles.label}>Phone:</Text>
+          <Text style={styles.label}>Tel.:</Text>
           <Text style={styles.value}>{profileData.phone}</Text>
 
-          <Text style={styles.label}>Account Type:</Text>
+          <Text style={styles.label}>Tipo usuario:</Text>
           <Text style={styles.value}>{profileData.accountType}</Text>
 
-          <Text style={styles.label}>Address:</Text>
+          <Text style={styles.label}>Dirección:</Text>
           <Text style={styles.value}> {typeof profileData.address === 'string'
                 ? profileData.address
                 : profileData.address}</Text>
 
           {profileData.ubicacion && (
             <>
-              <Text style={styles.label}>Location:</Text>
+              <Text style={styles.label}>Ubicación:</Text>
               <Text style={styles.value}>
                 [{profileData.ubicacion.latitude}° N, {profileData.ubicacion.longitude}° W]
               </Text>

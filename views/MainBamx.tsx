@@ -69,7 +69,7 @@ export default function MainBamx() {
           ]} 
           onPress={() => navigation.navigate('Maps')}
         >
-          <Text style={styles.buttonText}>Display Map</Text>
+          <Text style={styles.buttonText}>Mostrar Mapa</Text>
         </Pressable>
         
         <Pressable 
@@ -109,7 +109,7 @@ export default function MainBamx() {
           ]} 
           onPress={handleSignOut}
         >
-          <Text style={styles.buttonText}>Sign Out</Text>
+          <Text style={styles.buttonText}>Cerrar sesión</Text>
         </Pressable>
       </View>
     </View>
