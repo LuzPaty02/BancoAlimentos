@@ -41,7 +41,7 @@ const Login = () => {
         // Navigate based on account type
         switch (userType) {
           case 'regular donor':
-            navigation.navigate('MainMenu');
+            navigation.navigate('Company');
             console.log('Regular donor account type');
             break;
           case 'donor company':
@@ -49,7 +49,7 @@ const Login = () => {
             console.log('Donor company account type');
             break;
           case 'food bank staff':
-            navigation.navigate('Maps');
+            navigation.navigate('MainBamx');
             console.log('Food Bank account type');
             break;
           default:
