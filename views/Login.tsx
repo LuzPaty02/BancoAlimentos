@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
-import { signInWithEmailAndPassword} from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { auth, db } from './Authentication';
 import { doc, getDoc } from 'firebase/firestore';
@@ -25,47 +25,47 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const navigation = useNavigation<NavigationProp<any>>(); 
-  
-    const handleLogin = async (e:any) => {
-      e.preventDefault();
-  
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const userId = userCredential.user.uid;
-  
-        // Fetch user account type from Firestore
-        const userDoc = await getDoc(doc(db, 'users', userId));
-        const userType = userDoc.data()?.accountType;
-  
-        // Navigate based on account type
-        switch (userType) {
-          case 'regular donor':
-            navigation.navigate('MainMenu');
-            console.log('Regular donor account type');
-            break;
-          case 'donor company':
-            navigation.navigate('Company');
-            console.log('Donor company account type');
-            break;
-          case 'food bank staff':
-            navigation.navigate('Maps');
-            console.log('Food Bank account type');
-            break;
-          default:
-            setError('Unknown account type');
-            break;  
+    const navigation = useNavigation<NavigationProp<any>>();
+
+    const handleLogin = async (e: any) => {
+        e.preventDefault();
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const userId = userCredential.user.uid;
+
+            // Fetch user account type from Firestore
+            const userDoc = await getDoc(doc(db, 'users', userId));
+            const userType = userDoc.data()?.accountType;
+
+            // Navigate based on account type
+            switch (userType) {
+                case 'regular donor':
+                    navigation.navigate('Company');
+                    console.log('Regular donor account type');
+                    break;
+                case 'donor company':
+                    navigation.navigate('Company');
+                    console.log('Donor company account type');
+                    break;
+                case 'food bank staff':
+                    navigation.navigate('MainBamx');
+                    console.log('Food Bank account type');
+                    break;
+                default:
+                    setError('Unknown account type');
+                    break;
+            }
+        } catch (err) {
+            setError('Failed to log in');
+            console.error(err);
         }
-      } catch (err) {
-        setError('Failed to log in');
-        console.error(err);
-      }
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.box}>
-                <View style = {styles.group}>
+                <View style={styles.group}>
                     <Text style={styles.switchText}>Email</Text>
                     <TextInput
                         style={styles.inputField}
@@ -75,7 +75,7 @@ const Login = () => {
                         onChangeText={setEmail}
                     />
                 </View>
-                <View style = {styles.group}>
+                <View style={styles.group}>
                     <Text style={styles.switchText}>Password</Text>
                     <TextInput
                         style={styles.inputField}

@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AuthContext, db } from './Authentication';
 import { doc, setDoc } from 'firebase/firestore';
 import { encryptData } from '../encrypt'; // Import encryption utility
+import { ScrollView } from 'react-native-gesture-handler';
 
 const screenHeight = Dimensions.get('window').height;
 const RPH = (percentage: any) => (percentage / 100) * screenHeight;
@@ -32,27 +33,27 @@ const SignInView: React.FC = () => {
       if (!email || !nombre || !phone) {
         throw new Error('All fields are required before encryption.');
       }
-  
+
       // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const userId = userCredential.user.uid;
-  
+
       console.log('Pre-encryption Data:', { email, nombre, phone });
-  
+
       // Encrypt user data
       const encryptedEmail = await encryptData(email);
       const encryptedNombre = await encryptData(nombre);
       const encryptedPhone = await encryptData(phone);
       const encryptedLocation = await encryptData({ latitude: 0, longitude: 0 }); // Object input
-  
+
       console.log('Post-encryption Data:', {
         encryptedEmail,
         encryptedNombre,
         encryptedPhone,
       });
-  
+
       const accountType = isBAMX ? 'food bank staff' : isCompany ? 'donor company' : 'regular donor';
-  
+
       const userEncryptedData = {
         email: encryptedEmail,
         nombre: encryptedNombre,
@@ -61,20 +62,20 @@ const SignInView: React.FC = () => {
         ...(accountType === 'donor company' && { ubicacion: encryptedLocation }),
         ...(accountType === 'food bank staff' && { uid: userId }),
       };
-  
+
       // Save encrypted user data in Firestore
       await setDoc(doc(db, 'users', userId), userEncryptedData);
-  
+
       console.log('User signed up successfully with encrypted data and default location.');
     } catch (error: any) {
       console.error('Sign-up error:', error);
-      
+
       if (error.message.includes('auth/email-already-in-use')) {
         alert('Email is already in use.');
       } else {
         alert('Error during sign-up: ' + error.message);
       }
-  
+
       // Clean up Firebase Authentication if user creation partially succeeded
       if (auth.currentUser) {
         try {
@@ -86,84 +87,86 @@ const SignInView: React.FC = () => {
       }
     }
   };
-  
+
 
   return (
-    <View style={styles.container}>
-      <View style={styles.box}>
-        <View style={styles.group}>
-          <Text style={styles.switchText}>Name</Text>
-          <TextInput
-            style={styles.inputField}
-            placeholder="Your Name"
-            value={nombre}
-            onChangeText={setNombre}
-          />
-        </View>
-        <View style={styles.group}>
-          <Text style={styles.switchText}>Phone Number</Text>
-          <TextInput
-            style={styles.inputField}
-            placeholder="+52 0 0000 0000"
-            value={phone}
-            onChangeText={setPhone}
-          />
-        </View>
-        <View style={styles.group}>
-          <Text style={styles.switchText}>Email</Text>
-          <TextInput
-            style={styles.inputField}
-            keyboardType="email-address"
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-        <View style={styles.group}>
-          <Text style={styles.switchText}>Password</Text>
-          <TextInput
-            style={styles.inputField}
-            placeholder="Password"
-            secureTextEntry={true}
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-        <View style={styles.group}>
-          <View style={styles.section}>
-            <Checkbox
-              style={styles.checkbox}
-              color={'black'}
-              value={isCompany}
-              onValueChange={setIsCompany}
+    <ScrollView contentContainerStyle={styles.scroll}>
+      <View style={styles.container}>
+        <View style={styles.box}>
+          <View style={styles.group}>
+            <Text style={styles.switchText}>Name</Text>
+            <TextInput
+              style={styles.inputField}
+              placeholder="Your Name"
+              value={nombre}
+              onChangeText={setNombre}
             />
-            <Text style={styles.switchText}>Register as a company account</Text>
           </View>
-          <Text style={styles.checkText}>
-            By registering as a Company account you'll have to wait until the BAMX administrator
-            accepts and verifies your request.
-          </Text>
-        </View>
-        <View style={styles.group}>
-          <View style={styles.section}>
-            <Checkbox
-              style={styles.checkbox}
-              color={'black'}
-              value={isBAMX}
-              onValueChange={setIsBAMX}
+          <View style={styles.group}>
+            <Text style={styles.switchText}>Phone Number</Text>
+            <TextInput
+              style={styles.inputField}
+              placeholder="+52 0 0000 0000"
+              value={phone}
+              onChangeText={setPhone}
             />
-            <Text style={styles.switchText}>Register as a BAMX account</Text>
           </View>
-          <Text style={styles.checkText}>
-            By registering as a new BAMX employee account you'll have to wait until the BAMX
-            administrator accepts and verifies your request.
-          </Text>
+          <View style={styles.group}>
+            <Text style={styles.switchText}>Email</Text>
+            <TextInput
+              style={styles.inputField}
+              keyboardType="email-address"
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+          <View style={styles.group}>
+            <Text style={styles.switchText}>Password</Text>
+            <TextInput
+              style={styles.inputField}
+              placeholder="Password"
+              secureTextEntry={true}
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+          <View style={styles.group}>
+            <View style={styles.section}>
+              <Checkbox
+                style={styles.checkbox}
+                color={'black'}
+                value={isCompany}
+                onValueChange={setIsCompany}
+              />
+              <Text style={styles.switchText}>Register as a company account</Text>
+            </View>
+            <Text style={styles.checkText}>
+              By registering as a Company account you'll have to wait until the BAMX administrator
+              accepts and verifies your request.
+            </Text>
+          </View>
+          <View style={styles.group}>
+            <View style={styles.section}>
+              <Checkbox
+                style={styles.checkbox}
+                color={'black'}
+                value={isBAMX}
+                onValueChange={setIsBAMX}
+              />
+              <Text style={styles.switchText}>Register as a BAMX account</Text>
+            </View>
+            <Text style={styles.checkText}>
+              By registering as a new BAMX employee account you'll have to wait until the BAMX
+              administrator accepts and verifies your request.
+            </Text>
+          </View>
+          <Pressable style={styles.button} onPress={handleSignUp}>
+            <Text style={styles.textButton}>Register</Text>
+          </Pressable>
         </View>
-        <Pressable style={styles.button} onPress={handleSignUp}>
-          <Text style={styles.textButton}>Register</Text>
-        </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -174,6 +177,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     flex: 1,
     fontFamily: 'Roboto',
+  },
+  scroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    textAlign: 'left',
   },
   box: {
     textAlign: 'left',
