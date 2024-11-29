@@ -44,7 +44,7 @@ const screenWidth = Dimensions.get('window').width;
 const RPW = (percentage: number) => (percentage / 100) * screenWidth;
 
 const placeholder = {
-  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRFZ0wyvscCvM9CLboB7yLEgmTUQcviU48Kg&s',
+  uri: 'https://media.licdn.com/dms/image/v2/D560BAQH0lQq_4TEh4g/company-logo_200_200/company-logo_200_200/0/1712160830518/redbamx_logo?e=2147483647&v=beta&t=96GI1KFEMnrHFqdQU0TZJRcc1WpbvYC7FN-hfB-HKh0',
 };
 
 const DisplayNecesidadesDonor = () => {
