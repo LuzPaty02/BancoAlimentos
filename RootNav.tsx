@@ -10,6 +10,8 @@ import DisplayNecesidades from './views/DisplayNecesidades';
 import AddNecesidad from './views/AddNecesidad';
 import DonorProfile from './views/DonorProfile';
 import UpdateLocation from './views/UpdateLocation';
+import Company from './views/Company';
+import DisplayNecesidadesDonor from './views/DisplayNecesidadesDonor';
 
 const Stack = createStackNavigator();
 
@@ -22,14 +24,13 @@ function RootNavigator() {
       {user ? (
         // Group for authenticated user screens
         <Stack.Group>
-          <Stack.Screen name="MainMenu" component={Main} options={{ headerShown: false }} />
+          <Stack.Screen name="Company" component={Company} options={{headerShown: true}}/>
+          <Stack.Screen name="DisplayNecesidadesDonor" component={DisplayNecesidadesDonor} options={{title: 'Necesidades Publicadas'}}/>
+          <Stack.Screen name="MainMenu" component={Main} options={{ headerShown: true }} />
           <Stack.Screen name="Maps" component={Maps} options={{ title: 'Display Map' }} />
           <Stack.Screen name="DisplayNecesidades" component={DisplayNecesidades} options={{ title: 'Necesidades Publicadas' }} />
-          <Stack.Screen name="AddNecesidad" component={AddNecesidad} options={{ title: 'Add Necesidad' }} />
-          <Stack.Screen
-            name="DonorProfile"
-            options={{ title: 'Donor Profile' }}
-          >
+          <Stack.Screen name="AddNecesidad" component={AddNecesidad} options={{ title: 'Agregar Necesidad' }} />
+          <Stack.Screen name="DonorProfile" options={{ title: 'Perfil de donador' }} >
             {props => <DonorProfile {...props} userId={user.uid} />}
           </Stack.Screen>
           <Stack.Screen
@@ -40,6 +41,7 @@ function RootNavigator() {
           </Stack.Screen>
 
         </Stack.Group>
+        // Group for company account
 
       ) : (
         // Group for unauthenticated user screens
