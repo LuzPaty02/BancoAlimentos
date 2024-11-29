@@ -54,7 +54,7 @@ const Login = () => {
             break;
           default:
             setError('Unknown account type');
-            break;
+            break;  
         }
       } catch (err) {
         setError('Failed to log in');

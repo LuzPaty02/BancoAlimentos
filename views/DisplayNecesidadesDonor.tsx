@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, ScrollView, Image, StyleSheet, Dimensions, Pressable, Modal, TextInput } from 'react-native';
-import { collection, getDocs, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, getDoc, doc, addDoc, Timestamp } from 'firebase/firestore';
 import { AuthContext } from './Authentication';
+import { useSubmissionTrigger } from './SubmissionContext'; 
+import { encryptData } from '../encrypt';
+
 
 interface Necesidad {
   id: string;
@@ -24,6 +27,7 @@ interface DonationRequest {
   cantidad: number;
   estado: string;
   fechaSolicitud: Timestamp;
+  ubicacion: string;
 }
 
 const screenHeight = Dimensions.get('window').height;
@@ -47,6 +51,9 @@ const DisplayNecesidadesDonor = () => {
   const [selectedNecesidad, setSelectedNecesidad] = useState<Necesidad | null>(null);
   const [donationQuantity, setDonationQuantity] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+ 
+  const [location, setLocation] = useState<Location | null>(null);
   
   const authContext = useContext(AuthContext);
   const db = authContext?.db;
@@ -83,6 +90,28 @@ const DisplayNecesidadesDonor = () => {
     setModalVisible(true);
   };
 
+  useEffect(() => {
+    const fetchUserLocation = async () => {
+      if (!db || !currentUser) return;
+
+      try {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        // console.log('UserDoc:', userDoc.data());
+        if (userDoc.exists()) {
+          const encryptedData = userDoc.data().ubicacion;
+          setLocation(encryptedData); // Store the user's location in state
+          console.log('User location:', encryptedData);
+        }
+      } catch (error) {
+        console.error('Error fetching user location:', error);
+      }
+    };
+
+    fetchUserLocation();
+  }, [db, currentUser]);
+
+  const { setTrigger } = useSubmissionTrigger();
+
   const handleDonationSubmit = async () => {
     if (!db || !currentUser || !selectedNecesidad || !donationQuantity) {
       console.error("Missing required information for donation");
@@ -90,7 +119,21 @@ const DisplayNecesidadesDonor = () => {
     }
 
     setSubmitting(true);
+
+
     try {
+      // Fetch the user's location directly during submission
+      const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+      let userUbicacion: { latitude: number; longitude: number } | null = null;
+  
+      if (userDoc.exists()) {
+        userUbicacion = userDoc.data().ubicacion || { latitude: 0, longitude: 0 }; // Default to 0 if no location
+      } else {
+        console.warn("User document does not exist or missing ubicacion field.");
+      }
+
+      const encryptedUbicacion = await encryptData(JSON.stringify(userUbicacion || { latitude: 0, longitude: 0 }));
+
       const donationRequest: DonationRequest = {
         necesidadId: selectedNecesidad.id,
         necesidadName: selectedNecesidad.Necesidad,
@@ -98,12 +141,14 @@ const DisplayNecesidadesDonor = () => {
         cantidad: Number(donationQuantity),
         estado: 'pendiente',
         fechaSolicitud: Timestamp.now(),
+        ubicacion: encryptedUbicacion,
       };
 
       await addDoc(collection(db, 'donationRequests'), donationRequest);
       setModalVisible(false);
       setDonationQuantity('');
       alert('Donation request submitted successfully!');
+      setTrigger(true);
     } catch (error) {
       console.error('Error submitting donation request:', error);
       alert('Error submitting donation request. Please try again.');
@@ -111,6 +156,8 @@ const DisplayNecesidadesDonor = () => {
       setSubmitting(false);
     }
   };
+
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
