@@ -2,21 +2,22 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { doc, getDoc } from 'firebase/firestore';
 import { AuthContext, db } from './Authentication';
-import { useNavigation } from '@react-navigation/native';
-import { decryptData } from '../encrypt'; 
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { decryptData } from '../encrypt';
 
 interface ProfileData {
   nombre: string;
   email: string;
   phone: string;
   accountType: string;
+  address?: string;
   ubicacion?: {
     latitude: number;
     longitude: number;
   };
 }
 
-const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
+const DonorProfile: React.FC<{ userId: string }> = ({ userId }: { userId: string }) => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation() as any;
@@ -26,8 +27,7 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
     throw new Error('AuthContext is null');
   }
 
-  useEffect(() => {
-    const fetchAndDecryptProfileData = async () => {
+  const fetchAndDecryptProfileData = async () => {
       try {
         const docRef = doc(db, 'users', userId);
         const docSnap = await getDoc(docRef);
@@ -40,22 +40,35 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
           const decryptedNombre = await decryptData(encryptedData.nombre);
           const decryptedPhone = await decryptData(encryptedData.phone);
 
+          let decryptedAddress;
+          if (encryptedData.address) {
+            try {
+              const decryptedAddressData = await decryptData(encryptedData.address);
+              decryptedAddress =
+                typeof decryptedAddressData === 'string'
+                  ? decryptedAddressData
+                  : decryptedAddressData.address;
+            } catch (error) {
+              console.error('Failed to decrypt address:', error);
+            }
+          }
+          // Decrypt location
           let decryptedUbicacion;
-          if (encryptedData.encryptedUbicacion) {
-            decryptedUbicacion = await decryptData(encryptedData.encryptedUbicacion);
+          if (encryptedData.ubicacion) {
+            decryptedUbicacion = await decryptData(encryptedData.ubicacion);
             if (typeof decryptedUbicacion === 'string') {
               decryptedUbicacion = JSON.parse(decryptedUbicacion);
             }
           }
-
-          console.log('Decrypted Data:', { decryptedEmail, decryptedNombre, decryptedPhone, decryptedUbicacion });
+          console.log('Decrypted Data:', { decryptedEmail, decryptedNombre, decryptedPhone, decryptedUbicacion, decryptedAddress });
 
           setProfileData({
             nombre: decryptedNombre,
             email: decryptedEmail,
             phone: decryptedPhone,
             accountType: encryptedData.accountType,
-            ubicacion: decryptedUbicacion,
+            address: decryptedAddress || undefined,
+            ubicacion: decryptedUbicacion || undefined,
           });
         } else {
           console.log('No such document!');
@@ -67,8 +80,19 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
       }
     };
 
-    fetchAndDecryptProfileData();
-  }, [userId]);
+  // Run fetch logic whenever the screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAndDecryptProfileData();
+    }, [userId])
+  );
+      // Run fetch logic whenever the screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAndDecryptProfileData();
+    }, [userId])
+  );
+  
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -78,10 +102,23 @@ const DonorProfile: React.FC<{ userId: string }> = ({ userId }) => {
     <View style={styles.container}>
       {profileData ? (
         <>
-          <Text>Nombre: {profileData.nombre}</Text>
-          <Text>Email: {profileData.email}</Text>
-          <Text>Phone: {profileData.phone}</Text>
-          <Text>Account Type: {profileData.accountType}</Text>
+          <Text style={styles.label}>Name:</Text>
+          <Text style={styles.value}>{profileData.nombre}</Text>
+
+          <Text style={styles.label}>Email:</Text>
+          <Text style={styles.value}>{profileData.email}</Text>
+
+          <Text style={styles.label}>Phone:</Text>
+          <Text style={styles.value}>{profileData.phone}</Text>
+
+          <Text style={styles.label}>Account Type:</Text>
+          <Text style={styles.value}>{profileData.accountType}</Text>
+
+          <Text style={styles.label}>Address:</Text>
+          <Text style={styles.value}> {typeof profileData.address === 'string'
+                ? profileData.address
+                : profileData.address}</Text>
+
           {profileData.ubicacion && (
             <Text>Ubicacion: {profileData.ubicacion.latitude}, {profileData.ubicacion.longitude}</Text>
           )}

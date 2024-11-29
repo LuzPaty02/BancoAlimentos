@@ -67,7 +67,7 @@ export default function Company() {
             styles.button,
             pressed && styles.buttonPressed
           ]} 
-          onPress={() => navigation.navigate('DisplayNecesidades')}
+          onPress={() => navigation.navigate('DisplayNecesidadesDonor')}
         >
           <Text style={styles.buttonText}>Necesidades</Text>
         </Pressable>
