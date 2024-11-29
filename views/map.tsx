@@ -33,7 +33,7 @@ const Maps: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.filterContainer}>
-        {['Todos', 'Medicamentos', 'Ropa', 'Alimentos', 'baddies'].map((category) => (
+        {['Todos', 'Medicamentos', 'Ropa', 'Alimentos'].map((category) => (
           <TouchableOpacity
             key={category}
             style={[

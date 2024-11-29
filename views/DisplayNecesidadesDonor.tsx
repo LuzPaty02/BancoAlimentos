@@ -31,13 +31,17 @@ interface DonationRequest {
 }
 
 const screenHeight = Dimensions.get('window').height;
-const RPH = (percentage: number) => (percentage / 100) * screenHeight;
+const RPH = (percentage: any) => {
+  return (percentage / 100) * screenHeight;
+};
 
 const screenWidth = Dimensions.get('window').width;
-const RPW = (percentage: number) => (percentage / 100) * screenWidth;
+const RPW = (percentage: any) => {
+  return (percentage / 100) * screenWidth;
+};
 
 const placeholder = {
-  uri: 'https://media.licdn.com/dms/image/v2/D560BAQH0lQq_4TEh4g/company-logo_200_200/company-logo_200_200/0/1712160830518/redbamx_logo?e=2147483647&v=beta&t=96GI1KFEMnrHFqdQU0TZJRcc1WpbvYC7FN-hfB-HKh0',
+  uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRFZ0wyvscCvM9CLboB7yLEgmTUQcviU48Kg&s',
 };
 
 const DisplayNecesidadesDonor = () => {
@@ -58,7 +62,7 @@ const DisplayNecesidadesDonor = () => {
   useEffect(() => {
     const fetchNecesidades = async () => {
       if (!db) {
-        console.error('Firestore database not available.');
+        console.error("Firestore database not available.");
         setLoading(false);
         return;
       }
@@ -110,7 +114,7 @@ const DisplayNecesidadesDonor = () => {
 
   const handleDonationSubmit = async () => {
     if (!db || !currentUser || !selectedNecesidad || !donationQuantity) {
-      console.error('Missing required information for donation');
+      console.error("Missing required information for donation");
       return;
     }
 
@@ -162,13 +166,16 @@ const DisplayNecesidadesDonor = () => {
           <Text>Loading...</Text>
         ) : necesidades.length > 0 ? (
           necesidades.map((necesidad) => (
-            <Pressable key={necesidad.id} onPress={() => handleNecesidadPress(necesidad)}>
+            <Pressable 
+              key={necesidad.id} 
+              onPress={() => handleNecesidadPress(necesidad)}
+            >
               <View style={styles.list}>
                 <View style={styles.listItem}>
                   <Image source={placeholder} style={styles.imgstyle} />
                   <View style={styles.group}>
                     <Text style={styles.necesidadTitle}>{necesidad.Necesidad}</Text>
-                    <Text>Tipo: {necesidad.Categoria?.Tipo || 'No especificado'}</Text>
+                    <Text>Tipo: {necesidad.Categoria?.Tipo}</Text>
                     <Text>Prioridad: {necesidad.Prioridad}</Text>
                   </View>
                 </View>
@@ -193,12 +200,10 @@ const DisplayNecesidadesDonor = () => {
                 <Text style={styles.modalTitle}>{selectedNecesidad.Necesidad}</Text>
                 <Image source={placeholder} style={styles.modalImage} />
                 <View style={styles.modalInfo}>
-                  <Text>Tipo: {selectedNecesidad.Categoria?.Tipo || 'No especificado'}</Text>
+                  <Text>Tipo: {selectedNecesidad.Categoria?.Tipo}</Text>
                   <Text>Prioridad: {selectedNecesidad.Prioridad}</Text>
-                  <Text>
-                    Cantidad Requerida: {selectedNecesidad.Cantidad_requerida || 'No especificada'}
-                  </Text>
-
+                  <Text>Cantidad Requerida: {selectedNecesidad.Cantidad_requerida || 'No especificada'}</Text>
+                  
                   <TextInput
                     style={styles.quantityInput}
                     placeholder="Cantidad a donar"
@@ -206,8 +211,8 @@ const DisplayNecesidadesDonor = () => {
                     value={donationQuantity}
                     onChangeText={setDonationQuantity}
                   />
-
-                  <Pressable
+                  
+                  <Pressable 
                     style={[styles.button, submitting && styles.buttonDisabled]}
                     onPress={handleDonationSubmit}
                     disabled={submitting}
@@ -216,8 +221,8 @@ const DisplayNecesidadesDonor = () => {
                       {submitting ? 'Submitting...' : 'Subir solicitud de donación'}
                     </Text>
                   </Pressable>
-
-                  <Pressable
+                  
+                  <Pressable 
                     style={styles.closeButton}
                     onPress={() => setModalVisible(false)}
                   >
