@@ -77,7 +77,7 @@ export async function decryptData(encryptedData) {
             return decryptedString;
         }
     } catch (error) {
-        console.error('Decryption error:', error);
+        // console.error('Decryption error:', error);
         throw new Error('Failed to decrypt data.');
     }
 }

@@ -49,7 +49,7 @@ export default function Company() {
       console.log('User signed out');
       navigation.navigate('Login');
     } catch (error) {
-      console.error('Error signing out:', error);
+      // console.error('Error signing out:', error);
     }
   };
 

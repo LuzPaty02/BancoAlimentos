@@ -58,7 +58,7 @@ const Login = () => {
             }
         } catch (err) {
             setError('Failed to log in');
-            console.error(err);
+            // console.error(err);
         }
     };
 

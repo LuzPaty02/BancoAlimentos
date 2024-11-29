@@ -8,6 +8,7 @@ interface Donor {
   id: string;
   nombre: string;
   email: string;
+  accountType: string;
 }
 
 const screenHeight = Dimensions.get('window').height;
@@ -57,14 +58,25 @@ const DisplayDonors = () => {
             console.warn(`Failed to decrypt 'email' for donor ID ${donor.id}:`, error);
           }
 
+          try {
+            decryptedDonor.accountType = await decryptData(donor.accountType);
+          } catch (error) {
+            console.warn(`Failed to decrypt 'accountType' for donor ID ${donor.id}:`, error);
+          }
+
           return decryptedDonor as Donor;
         })
       );
 
-      const validDonors = decryptedDonors.filter((donor) => donor.nombre || donor.email);
+      // Filter valid donors and exclude those with accountType "food bank"
+      const validDonors = decryptedDonors.filter(
+        (donor) =>
+          (donor.nombre || donor.email) && donor.accountType != 'food bank staff'
+      );
+
       setDonors(validDonors as Donor[]);
     } catch (error) {
-      console.error('Error fetching donors:', error);
+      // console.error('Error fetching donors:', error);
     } finally {
       setLoading(false);
     }
