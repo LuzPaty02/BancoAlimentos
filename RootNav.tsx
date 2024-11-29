@@ -71,12 +71,24 @@ function RootNavigator() {
         <Stack.Group>
           <Stack.Screen name="MainBamx" component={MainBamx} options={{ title: 'BAMX Dashboard' }} />
           <Stack.Screen name="DisplayNecesidades" component={DisplayNecesidades} options={{ title: 'Necesidades Publicadas' }} />
-          <Stack.Screen name="Maps" component={Maps} options={{ title: 'Mostrar Mapa' }} />
+          <Stack.Screen name="Maps" component={Maps} options={{ title: 'Display Map' }} />
           <Stack.Screen name="DisplayDonors" component={DisplayDonors} options={{ title: 'Agregar Necesidad' }} />
           <Stack.Screen name="AddNecesidad" component={AddNecesidad} options={{ title: 'Organizaciones donantes activas' }} />
         </Stack.Group>
       )}
       {accountType === 'donor company' && (
+        <Stack.Group>
+          <Stack.Screen name="Company" component={Company} options={{ title: 'Donor Dashboard' }} />
+          <Stack.Screen name="DisplayNecesidadesDonor" component={DisplayNecesidadesDonor} options={{ title: 'Necesidades Publicadas' }} />
+          <Stack.Screen name="DonorProfile" options={{ title: 'Perfil de Donador' }}>
+            {props => <DonorProfile {...props} userId={user.uid} />}
+          </Stack.Screen>
+          <Stack.Screen name="UpdateLocation" options={{ title: 'Actualizar Ubicación' }}>
+            {props => <UpdateLocation {...props} userId={user.uid} />}
+          </Stack.Screen>
+        </Stack.Group>
+      )}
+      {accountType === 'regular donor' && (
         <Stack.Group>
           <Stack.Screen name="Company" component={Company} options={{ title: 'Donor Dashboard' }} />
           <Stack.Screen name="DisplayNecesidadesDonor" component={DisplayNecesidadesDonor} options={{ title: 'Necesidades Publicadas' }} />
