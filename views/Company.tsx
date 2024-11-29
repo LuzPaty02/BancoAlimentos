@@ -79,7 +79,7 @@ export default function Company() {
           ]} 
           onPress={() => navigation.navigate('DonorProfile')}
         >
-          <Text style={styles.buttonText}>Donor Profile</Text>
+          <Text style={styles.buttonText}>Perfil de Donante</Text>
         </Pressable>
         
         <Pressable 
@@ -89,7 +89,7 @@ export default function Company() {
           ]} 
           onPress={handleSignOut}
         >
-          <Text style={styles.buttonText}>Sign Out</Text>
+          <Text style={styles.buttonText}>Cerrar sesión</Text>
         </Pressable>
       </View>
     </View>
